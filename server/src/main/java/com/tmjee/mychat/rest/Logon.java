@@ -1,7 +1,6 @@
 package com.tmjee.mychat.rest;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -9,7 +8,7 @@ import javax.ws.rs.Produces;
  * @author tmjee
  */
 //@Path("/v1")
-public class Logon extends Application{
+public class Logon extends V1 {
 
     @GET
     @Path("/test")
