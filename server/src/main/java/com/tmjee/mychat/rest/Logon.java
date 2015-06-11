@@ -8,17 +8,19 @@ import javax.ws.rs.Produces;
 /**
  * @author tmjee
  */
-@Path("/logon")
+//@Path("/v1")
 public class Logon extends Application{
 
     @GET
-    @Produces("json/tex")
+    @Path("/test")
+    @Produces("application/json")
     public String test() {
         return "{test:'one'}";
     }
 
     @GET
-    @Produces("json/text")
+    @Path("/logon")
+    @Produces("application/json")
     public String logon() {
 
 
