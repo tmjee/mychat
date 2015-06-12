@@ -7,7 +7,6 @@ import javax.ws.rs.Produces;
 /**
  * @author tmjee
  */
-//@Path("/v1")
 public class Logon extends V1 {
 
     @GET

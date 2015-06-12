@@ -67,6 +67,53 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>jooq</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen-maven</artifactId>
+                        <version>${jooq.version}</version>
+
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <jdbc>
+                                <driver>${db.driver}</driver>
+                                <url>${db.url}</url>
+                                <user>${db.username}</user>
+                                <password>${db.password}</password>
+                            </jdbc>
+                            <generator>
+                                <database>
+                                    <includes>public.*</includes>
+                                    <name>org.jooq.util.postgres.PostgresDatabase</name>
+                                    <inputSchema>public</inputSchema>
+                                </database>
+                                <target>
+                                    <packageName>com.tmjee.jooq.generated</packageName>
+                                    <directory>${basedir}/src/main/generated-sources</directory>
+                                </target>
+                            </generator>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
@@ -118,40 +165,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jooq</groupId>
-                <artifactId>jooq-codegen-maven</artifactId>
-                <version>${jooq.version}</version>
-
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <configuration>
-                    <jdbc>
-                        <driver>${db.driver}</driver>
-                        <url>${db.url}</url>
-                        <user>${db.username}</user>
-                        <password>${db.password}</password>
-                    </jdbc>
-                    <generator>
-                        <database>
-                            <includes>public.*</includes>
-                            <name>org.jooq.util.postgres.PostgresDatabase</name>
-                            <inputSchema>public</inputSchema>
-                        </database>
-                        <target>
-                            <packageName>com.tmjee.jooq.generated</packageName>
-                            <directory>${basedir}/src/main/generated-sources</directory>
-                        </target>
-                    </generator>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -1,5 +1,6 @@
 package com.tmjee.mychat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -21,6 +22,7 @@ public class MyChatGuiceServletContextListener implements ServletContextListener
         injectorV1 = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+                bind(ObjectMapper.class);
                 bind(LogonServices.class)
                         .annotatedWith(LogonServiceAnnotation.class)
                         .to(LogonServices.class);

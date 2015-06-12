@@ -23,9 +23,11 @@ public class MyChatResourceConfig extends ResourceConfig {
 
     public static class MyChatObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
+        private static final ObjectMapper objectMapper = new ObjectMapper();
+
         @Override
         public ObjectMapper getContext(Class<?> type) {
-            return null;
+           return objectMapper;
         }
     }
 }
