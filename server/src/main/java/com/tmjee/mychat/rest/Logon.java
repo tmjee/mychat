@@ -1,5 +1,9 @@
 package com.tmjee.mychat.rest;
 
+import com.google.inject.Injector;
+import com.tmjee.mychat.MyChatGuiceServletContextListener;
+import com.tmjee.mychat.service.LogonServices;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -9,18 +13,17 @@ import javax.ws.rs.Produces;
  */
 public class Logon extends V1 {
 
-    @GET
-    @Path("/test")
-    @Produces("application/json")
-    public String test() {
-        return "{test:'one'}";
-    }
 
     @GET
     @Path("/logon")
     @Produces("application/json")
-    public String logon() {
+    public String logon(String email, String password) {
 
+        Injector injector = MyChatGuiceServletContextListener.getV1Injector();
+
+        LogonServices logonServices = injector.getInstance(LogonServices.class);
+
+        logonServices.logon(email, password);
 
 
         return "{test:'one'}";

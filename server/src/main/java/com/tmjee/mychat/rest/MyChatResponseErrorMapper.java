@@ -19,8 +19,7 @@ public class MyChatResponseErrorMapper implements ResponseErrorMapper {
     public Response toResponse(Throwable throwable) {
         LOGGER.log(Level.WARNING, "", throwable);
 
-        Response.serverError()
-                .entity()
-        return null;
+        return Response.serverError()
+                .build();
     }
 }
