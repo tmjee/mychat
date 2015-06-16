@@ -1,12 +1,11 @@
 package com.tmjee.mychat.service;
 
 import com.google.inject.Inject;
-import com.tmjee.jooq.generated.tables.MychatUser;
 import com.tmjee.mychat.rest.Logon;
 import org.jooq.impl.DSL;
 
 import static org.jooq.impl.DSL.*;
-import static com.tmjee.jooq.generated.tables.MychatUser.*;
+import static com.tmjee.jooq.generated.Tables.*;
 
 import java.util.UUID;
 
@@ -24,10 +23,12 @@ public class LogonServices {
 
 
     public void logon(String email, String password) {
-        select(count())
-                .from(MYCHAT_USER)
-                .where(MYCHAT_USER.IDENTIFICATION_TYPE).equals(IdentificationTypeEnum.EMAIL)
+        select()
+            .from(MYCHAT_USER)
+            .where(MYCHAT_USER.IDENTIFICATION_TYPE.eq())
+            .fetch()
                 ;
+
     }
 
 
