@@ -16,15 +16,4 @@ public class MyChatResourceConfig extends ResourceConfig {
         packages("com.tmjee.mychat.rest");
         register(JacksonFeature.class);
     }
-
-
-    public static class MyChatObjectMapperProvider implements ContextResolver<ObjectMapper> {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        @Override
-        public ObjectMapper getContext(Class<?> type) {
-           return objectMapper;
-        }
-    }
 }

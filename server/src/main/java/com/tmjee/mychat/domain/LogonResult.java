@@ -7,22 +7,40 @@ import org.jooq.Record;
  */
 public class LogonResult {
 
-    private String message;
-    private String accessToken;
+    private final boolean ok;
+    private final String message;
+    private final String accessToken;
 
-    private LogonResult(String message, String accessToken) {
+    private LogonResult(boolean ok, String message) {
+        this.ok = ok;
+        this.message = message;
+        this.accessToken = null;
+    }
 
+    private LogonResult(boolean ok, String message, String accessToken) {
+        this.ok = ok;
+        this.message = message;
+        this.accessToken = accessToken;
+    }
+
+    public boolean isOk() {
+        return ok;
+    }
+
+    public String message() {
+        return message;
+    }
+
+    public String accessToken() {
+        return accessToken;
     }
 
     public static final LogonResult failed() {
-
-        return null;
+        return new LogonResult(false, "logon failed");
     }
 
     public static final LogonResult success(String accessToken, Record record) {
-
-        return null;
-
+        return new LogonResult(true, "logon success", accessToken);
     }
 
 

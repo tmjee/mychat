@@ -20,7 +20,6 @@ import java.util.UUID;
  */
 public class LogonServices {
 
-
     private DSL dsl;
 
     @Inject
@@ -38,6 +37,7 @@ public class LogonServices {
                 .and(MYCHAT_USER.IDENTIFICATION.isNotNull())
                 .and(MYCHAT_USER.IDENTIFICATION.eq(email))
                 .fetch();
+
         if (result.isNotEmpty()) {
             Record record = result.get(0);
             String salt = record.getValue(MYCHAT_USER.SALT);
