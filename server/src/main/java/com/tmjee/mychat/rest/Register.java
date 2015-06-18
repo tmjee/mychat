@@ -15,7 +15,7 @@ public class Register {
     @Path("/register")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void register() {
+    public void register(Req r) {
 
     }
 

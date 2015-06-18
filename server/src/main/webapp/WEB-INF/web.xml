@@ -8,6 +8,9 @@
     <listener>
         <listener-class>com.tmjee.mychat.MyChatGuiceServletContextListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>com.tmjee.mychat.MyChatCleanupContextListener</listener-class>
+    </listener>
 
     <filter>
         <filter-name>guiceFilter</filter-name>

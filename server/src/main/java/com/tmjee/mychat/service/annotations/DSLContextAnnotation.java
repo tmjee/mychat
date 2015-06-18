@@ -1,4 +1,4 @@
-package com.tmjee.mychat.service;
+package com.tmjee.mychat.service.annotations;
 
 import com.google.inject.BindingAnnotation;
 
@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
-public @interface LogonServiceAnnotation {
+public @interface DSLContextAnnotation {
 }

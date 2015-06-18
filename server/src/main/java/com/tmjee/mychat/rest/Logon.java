@@ -5,30 +5,32 @@ import com.tmjee.mychat.MyChatGuiceServletContextListener;
 import com.tmjee.mychat.domain.LogonResult;
 import com.tmjee.mychat.service.LogonServices;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.security.NoSuchAlgorithmException;
 
 /**
  * @author tmjee
  */
+@Provider
 public class Logon extends V1 {
 
-    @GET
+    @POST
     @Path("/logon")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response logon(String email, String password) throws NoSuchAlgorithmException {
+    public Response logon(Req r) throws NoSuchAlgorithmException {
 
         Injector injector = MyChatGuiceServletContextListener.getV1Injector();
 
         LogonServices logonServices = injector.getInstance(LogonServices.class);
 
-        LogonResult logonResult = logonServices.logon(email, password);
+        System.out.println("****** r.email="+r.email);
+        System.out.println("****** r.password="+r.password);
+
+        LogonResult logonResult = logonServices.logon(r.email, r.password);
 
         if (logonResult.isOk()) {
             return Response.ok()
@@ -36,6 +38,11 @@ public class Logon extends V1 {
         }
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(new Entity(logonResult)).build();
+    }
+
+    private static final class Req {
+        public String email;
+        public String password;
     }
 
 
