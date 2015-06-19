@@ -9,6 +9,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.objectweb.jotm.Jotm;
 
 import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 /**
@@ -16,9 +17,10 @@ import javax.transaction.UserTransaction;
  */
 public class TransactionInterceptor implements MethodInterceptor {
 
-    private final Jotm jotm;
+    private Jotm jotm;
 
-    public TransactionInterceptor(@JotmAnnotation Jotm jotm) {
+    @Inject
+    public void setJotm(@JotmAnnotation Jotm jotm) {
         this.jotm = jotm;
     }
 
@@ -27,18 +29,30 @@ public class TransactionInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 
         UserTransaction userTransaction = jotm.getUserTransaction();
-        userTransaction.begin();
 
-        if (isGoodToCommit(jotm.getUserTransaction().getStatus()) {
-
+        boolean isNew = isNewTransaction(userTransaction);
+        if (isNew) {
+            userTransaction.begin();
         }
-        Object ret = methodInvocation.proceed();
 
-        return null;
+        try {
+            Object ret = methodInvocation.proceed();
+
+            if (isNew) {
+                userTransaction.commit();
+            }
+            return ret;
+        }catch(Exception e) {
+            if (isNew) {
+                userTransaction.rollback();
+            }
+            throw e;
+        }
     }
 
 
-    private boolean isGoodToCommit(UserTransaction userTransaction) {
-        return true;
+    private boolean isNewTransaction(UserTransaction userTransaction) throws SystemException {
+        return (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION);
     }
+
 }

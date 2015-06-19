@@ -10,32 +10,36 @@ import org.objectweb.jotm.Jotm;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
+import java.util.Objects;
 
 /**
  * @author tmjee
  */
 public class MyChatCleanupContextListener implements ServletContextListener {
 
-    private final DataSource dataSource;
-    private final Jotm jotm;
+    private DataSource dataSource;
+    private Jotm jotm;
 
     @Inject
-    public MyChatCleanupContextListener(@JotmAnnotation Jotm jotm,
-                                        @DataSourceAnnotation DataSource dataSource)
-    {
-        this.dataSource = dataSource;
+    public void setJotm(@JotmAnnotation Jotm jotm) {
         this.jotm = jotm;
     }
 
+    @Inject
+    public void setDataSource(@DataSourceAnnotation DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
-
-    @Override
     public void contextInitialized(ServletContextEvent sce) {
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ((BoneCPDataSource)dataSource).close();
-        jotm.stop();
+        if (Objects.nonNull(dataSource)) {
+            ((BoneCPDataSource) dataSource).close();
+        }
+        if (Objects.nonNull(jotm)) {
+            jotm.stop();
+        }
     }
 }

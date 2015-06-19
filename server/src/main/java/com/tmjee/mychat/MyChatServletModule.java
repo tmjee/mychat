@@ -31,18 +31,16 @@ public class MyChatServletModule extends ServletModule {
         // bind properties
         try {
             Properties prop = new Properties();
-            prop.load(getClass().getResourceAsStream("config.properties"));
+            prop.load(getClass().getResourceAsStream("/config.properties"));
 
-            prop.forEach((k,v)->{
-                bindConstant()
+            System.out.println(getClass().getResourceAsStream("/config.properties"));
+            prop.forEach((k,v)->
+                    bindConstant()
                         .annotatedWith(Names.named((k.toString())))
-                        .to(v.toString());
-            });
+                        .to(v.toString()));
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "unable to locate config.properties");
         }
-
-        bind(UserTransaction.class);
 
         MethodInterceptor transactionInterceptor = new TransactionInterceptor();
         requestInjection(transactionInterceptor);
