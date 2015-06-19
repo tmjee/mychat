@@ -77,6 +77,12 @@
             <groupId>jotm</groupId>
             <artifactId>jotm</artifactId>
             <version>${jotm.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.resource</groupId>
+                    <artifactId>connector</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.jolbox</groupId>
@@ -90,10 +96,8 @@
         </dependency>
         <dependency>
             <groupId>javax.resource</groupId>
-            <artifactId>connector</artifactId>
-            <scope>system</scope>
-            <systemPath>${basedir}/ext-lib/javax.resource-3.1.2.jar</systemPath>
-            <version>3.1.2</version>
+            <artifactId>javax.resource-api</artifactId>
+            <version>1.7</version>
         </dependency>
     </dependencies>
 
