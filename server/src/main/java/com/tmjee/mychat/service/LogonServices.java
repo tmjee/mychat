@@ -2,11 +2,12 @@ package com.tmjee.mychat.service;
 
 import com.google.inject.Inject;
 import com.tmjee.mychat.domain.IdentificationTypeEnum;
-import com.tmjee.mychat.domain.LogonResult;
 import com.tmjee.mychat.domain.TokenStateEnum;
+import com.tmjee.mychat.rest.Logon;
+import com.tmjee.mychat.utils.DigestUtils;
+import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.impl.DSL;
 
 import static org.jooq.impl.DSL.*;
 import static com.tmjee.jooq.generated.Tables.*;
@@ -20,22 +21,24 @@ import java.util.UUID;
  */
 public class LogonServices {
 
-    private DSL dsl;
+    private DSLContextProvider dslContextProvider;
 
     @Inject
-    public LogonServices(DSL dsl) {
-        this.dsl = dsl;
+    public LogonServices(DSLContextProvider dslContextProvider) {
+        this.dslContextProvider = dslContextProvider;
     }
 
 
-    public LogonResult logon(String email, String password) throws NoSuchAlgorithmException {
+    public Logon.Res logon(Logon.Req req) throws NoSuchAlgorithmException {
+        DSLContext context = dslContextProvider.get();
+        System.out.println("******************************");
         Result<Record> result =
-            select()
+            context.select()
                 .from(MYCHAT_USER)
                 .where(MYCHAT_USER.IDENTIFICATION_TYPE.eq(IdentificationTypeEnum.EMAIL.name()))
                 .and(MYCHAT_USER.IDENTIFICATION_TYPE.isNotNull())
                 .and(MYCHAT_USER.IDENTIFICATION.isNotNull())
-                .and(MYCHAT_USER.IDENTIFICATION.eq(email))
+                .and(MYCHAT_USER.IDENTIFICATION.eq(req.email))
                 .fetch();
 
         if (result.isNotEmpty()) {
@@ -43,7 +46,7 @@ public class LogonServices {
             String salt = record.getValue(MYCHAT_USER.SALT);
             String pwd = record.getValue(MYCHAT_USER.PASSWORD);
 
-            String hashedPassword = DigestUtils.hashPassword(password, salt);
+            String hashedPassword = DigestUtils.hashPassword(req.password, salt);
             if (pwd.equalsIgnoreCase(hashedPassword)) {
                 Integer myChatUserId = record.getValue(MYCHAT_USER.MYCHAT_USER_ID);
 
@@ -60,10 +63,12 @@ public class LogonServices {
                                 new Timestamp(System.currentTimeMillis()))
                         .execute();
 
-                return LogonResult.success(accessToken, record);
+                System.out.println("****************************** success");
+                return Logon.Res.success(accessToken, record);
             }
         }
-        return LogonResult.failed();
+        System.out.println("****************************** failed");
+        return Logon.Res.failed();
     }
 
 

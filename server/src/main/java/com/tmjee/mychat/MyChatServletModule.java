@@ -77,7 +77,10 @@ public class MyChatServletModule extends ServletModule {
                 .in(Singleton.class);
 
         // ObjectMapper
-        bind(ObjectMapper.class);
+        bind(ObjectMapper.class)
+            .annotatedWith(ObjectMapperAnnotation.class)
+            .toProvider(ObjectMapperProvider.class)
+            .in(Singleton.class);
 
         // Services
         bind(LogonServices.class)
