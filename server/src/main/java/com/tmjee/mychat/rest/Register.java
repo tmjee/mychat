@@ -1,5 +1,7 @@
 package com.tmjee.mychat.rest;
 
+import com.tmjee.jooq.generated.tables.records.ChannelRecord;
+import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.mychat.domain.GenderEnum;
 import com.tmjee.mychat.service.RegisterServices;
 
@@ -11,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.security.NoSuchAlgorithmException;
+
+import static java.lang.String.format;
 
 /**
  * @author tmjee
@@ -47,6 +51,22 @@ public class Register extends V1<Register.Req, Register.Res> {
     }
 
     public static class Res extends V1.Res {
+
+        public Integer myChatUserId;
+
+        public static Res success(MychatUserRecord r, ChannelRecord re) {
+            Res res = new Res();
+            res.addMessage(format("MyChat user %s added successfully", r.getMychatUserId()));
+            res.myChatUserId = r.getMychatUserId();
+            return res;
+        }
+
+
+        public static Res failed(Req req) {
+            Res res = new Res();
+            res.addMessage(format("Failed to add MyChat user %s", req.email));
+            return res;
+        }
 
     }
 
