@@ -4,5 +4,7 @@ INSERT INTO "APPLICATION"
   ('web', 'web application', ''),
   ('desktop', 'desktop application', '');
 
-
+INSERT INTO "MYCHAT_USER"
+("IDENTIFICATION_TYPE", "IDENTIFICATION", "PASSWORD", "SALT", "STATUS", "CREATION_DATE", "MODIFICATION_DATE")
+VALUES
 
