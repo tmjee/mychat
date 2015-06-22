@@ -61,6 +61,11 @@ public class Register extends V1<Register.Req, Register.Res> {
             return res;
         }
 
+        public static Res alreadyExists(Req req) {
+            Res res = new Res();
+            res.addMessage(format("email %s is already registered", req.email));
+            return res;
+        }
 
         public static Res failed(Req req) {
             Res res = new Res();

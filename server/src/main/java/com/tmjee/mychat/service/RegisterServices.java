@@ -82,7 +82,7 @@ public class RegisterServices {
             }
             LOG.log(Level.SEVERE, format("no record inserted into CHANNEL table for MYCHAT_USER_ID %s", record.get(0).getMychatUserId()));
         } else {
-            LOG.log(Level.SEVERE, format("no record inserted into MYCHAT_USER table for email %s", req.email));
+            return Register.Res.alreadyExists(req);
         }
         return Register.Res.failed(req);
     }
