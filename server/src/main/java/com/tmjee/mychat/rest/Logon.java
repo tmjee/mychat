@@ -1,5 +1,6 @@
 package com.tmjee.mychat.rest;
 
+import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.mychat.service.LogonServices;
 import org.jooq.Record;
 
@@ -48,7 +49,7 @@ public class Logon extends V1<Logon.Req, Logon.Res> {
 
         public String accessToken;
 
-        public static Res success(String accessToken, Record record) {
+        public static Res success(String accessToken, MychatUserRecord myChatUserRecord) {
             Res res = new Res();
             res.accessToken = accessToken;
             res.addMessage("Logon success");

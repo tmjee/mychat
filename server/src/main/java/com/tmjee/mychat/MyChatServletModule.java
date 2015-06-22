@@ -1,10 +1,13 @@
 package com.tmjee.mychat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
+import com.google.inject.servlet.ServletScopes;
+import com.google.inject.servlet.SessionScoped;
 import com.tmjee.mychat.service.*;
 import com.tmjee.mychat.service.annotations.*;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -55,6 +58,27 @@ public class MyChatServletModule extends ServletModule {
                 Matchers.any(),
                 transactionInterceptor);
 
+        ApplicationTokenInterceptor applicationTokenInterceptor = new ApplicationTokenInterceptor();
+        requestInjection(applicationTokenInterceptor);
+
+        bindInterceptor(
+                Matchers.annotatedWith(ApplicationTokenAnnotation.class),
+                Matchers.any(),
+                applicationTokenInterceptor);
+
+        bindInterceptor(
+                Matchers.any(),
+                Matchers.annotatedWith(ApplicationTokenAnnotation.class),
+                applicationTokenInterceptor);
+
+
+
+        // user preferences
+        bind(UserPreferences.class)
+                .annotatedWith(UserPreferencesAnnotation.class)
+                .toProvider(UserPreferencesProvider.class)
+                .in(ServletScopes.SESSION);
+
 
         // jotm
         bind(Jotm.class)
@@ -74,7 +98,8 @@ public class MyChatServletModule extends ServletModule {
         bind(DSLContext.class)
                 .annotatedWith(DSLContextAnnotation.class)
                 .toProvider(DSLContextProvider.class)
-                .in(Singleton.class);
+                .in(MyChatScopes.ThreadLocalScope);
+
 
         // ObjectMapper
         bind(ObjectMapper.class)

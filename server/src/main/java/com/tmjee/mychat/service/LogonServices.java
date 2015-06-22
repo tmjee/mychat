@@ -1,9 +1,13 @@
 package com.tmjee.mychat.service;
 
 import com.google.inject.Inject;
+import com.tmjee.jooq.generated.tables.Token;
+import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.jooq.generated.tables.records.TokenRecord;
 import com.tmjee.mychat.domain.IdentificationTypeEnum;
 import com.tmjee.mychat.domain.TokenStateEnum;
 import com.tmjee.mychat.rest.Logon;
+import com.tmjee.mychat.service.annotations.UserPreferencesAnnotation;
 import com.tmjee.mychat.utils.DigestUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -21,20 +25,22 @@ import java.util.UUID;
  */
 public class LogonServices {
 
-    private DSLContextProvider dslContextProvider;
+    private final DSLContextProvider dslContextProvider;
+    private final UserPreferences userPreferences;
 
     @Inject
-    public LogonServices(DSLContextProvider dslContextProvider) {
+    public LogonServices(DSLContextProvider dslContextProvider,
+                         @UserPreferencesAnnotation UserPreferences userPreferences) {
         this.dslContextProvider = dslContextProvider;
+        this.userPreferences = userPreferences;
     }
 
 
     public Logon.Res logon(Logon.Req req) throws NoSuchAlgorithmException {
         DSLContext context = dslContextProvider.get();
         System.out.println("******************************");
-        Result<Record> result =
-            context.select()
-                .from(MYCHAT_USER)
+        Result<MychatUserRecord> result =
+            context.selectFrom(MYCHAT_USER)
                 .where(MYCHAT_USER.IDENTIFICATION_TYPE.eq(IdentificationTypeEnum.EMAIL.name()))
                 .and(MYCHAT_USER.IDENTIFICATION_TYPE.isNotNull())
                 .and(MYCHAT_USER.IDENTIFICATION.isNotNull())
@@ -42,17 +48,18 @@ public class LogonServices {
                 .fetch();
 
         if (result.isNotEmpty()) {
-            Record record = result.get(0);
-            String salt = record.getValue(MYCHAT_USER.SALT);
-            String pwd = record.getValue(MYCHAT_USER.PASSWORD);
+            MychatUserRecord myChatUserRecord = result.get(0);
+            String salt = myChatUserRecord.getValue(MYCHAT_USER.SALT);
+            String pwd = myChatUserRecord.getValue(MYCHAT_USER.PASSWORD);
 
             String hashedPassword = DigestUtils.hashPassword(req.password, salt);
             if (pwd.equalsIgnoreCase(hashedPassword)) {
-                Integer myChatUserId = record.getValue(MYCHAT_USER.MYCHAT_USER_ID);
+                Integer myChatUserId = myChatUserRecord.getValue(MYCHAT_USER.MYCHAT_USER_ID);
 
                 String accessToken = UUID.randomUUID().toString();
 
-                insertInto(TOKEN,
+                Result<TokenRecord> tokenRecord =
+                    insertInto(TOKEN,
                         TOKEN.MYCHAT_USER_ID,
                         TOKEN.TOKEN_,
                         TOKEN.STATE,
@@ -61,10 +68,13 @@ public class LogonServices {
                                 accessToken,
                                 TokenStateEnum.ACTIVE.name(),
                                 new Timestamp(System.currentTimeMillis()))
-                        .execute();
+                        .returning()
+                        .fetch();
+
+                userPreferences.setAccessToken(accessToken);
 
                 System.out.println("****************************** success");
-                return Logon.Res.success(accessToken, record);
+                return Logon.Res.success(accessToken, myChatUserRecord);
             }
         }
         System.out.println("****************************** failed");
