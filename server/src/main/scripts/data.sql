@@ -1,5 +1,5 @@
-INSERT INTO "APPLICATION_TOKEN"
-  ("APPLICATION_TOKEN_ID", "NAME", "DESCRIPTION", "KEY")
+INSERT INTO APPLICATION_TOKEN
+  (APPLICATION_TOKEN_ID, NAME, DESCRIPTION, APPLICATION_TOKEN)
 VALUES
   ('1',  'android', 'android application', 'd5b87197-495c-47ca-959d-332921004a52'),
   ('2',  'web', 'web application', '08947ad8-fe88-4bb5-a0e1-54ea0417b04e'),
@@ -15,9 +15,9 @@ VALUES
 
 
 
-INSERT INTO "MYCHAT_USER"
-  ("MYCHAT_USER_ID", "IDENTIFICATION_TYPE", "IDENTIFICATION", "PASSWORD", "SALT",
-   "STATUS", "CREATION_DATE", "MODIFICATION_DATE")
+INSERT INTO MYCHAT_USER
+  (MYCHAT_USER_ID, IDENTIFICATION_TYPE, IDENTIFICATION, PASSWORD, SALT,
+   STATUS, CREATION_DATE, MODIFICATION_DATE)
 VALUES
   ('1', 'EMAIL', 'toby@gmail.com',
    'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
@@ -32,13 +32,13 @@ VALUES
   'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
   '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('5', 'EMAIL', 'biz@gmail.com',
-  'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b'
+  'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
   '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
 
-INSERT INTO "PROFILE"
-  ("PROFILE_ID", "MYCHAT_USER_ID", "WHATSUP", "FULLNAME", "GENDER", "CREATION_DATE", "MODIFICATION_DATE")
+INSERT INTO PROFILE
+  (PROFILE_ID, MYCHAT_USER_ID, WHATSUP, FULLNAME, GENDER, CREATION_DATE, MODIFICATION_DATE)
 VALUES
   ('1', '1', 'This is Toby', 'Toby', 'MALE', CURRENT_TIMESTAMP, NULL),
   ('2', '2', 'This is Jack', 'Jack', 'MALE', CURRENT_TIMESTAMP, NULL),

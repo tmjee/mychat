@@ -14,22 +14,26 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.jooq.DSLContext;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author tmjee
  */
 public class ApplicationTokenInterceptor implements MethodInterceptor {
 
-    private DSLContext dsl;
+    private static final Logger LOG = Logger.getLogger(ApplicationTokenInterceptor.class.getName());
+
+    private Provider<DSLContext> dslProvider;
     private volatile Provider<UserPreferences> userPreferencesProvider;
 
     @Inject
-    public void setDsl(@DSLContextAnnotation DSLContext dslContext) {
-        this.dsl = dslContext;
+    public void setDsl(@DSLContextAnnotation Provider<DSLContext> dslProvider) {
+        this.dslProvider = dslProvider;
     }
 
     @Inject
-    public void setUserPreferences(Provider<UserPreferences> userPreferencesProvider) {
+    public void setUserPreferences(@UserPreferencesAnnotation Provider<UserPreferences> userPreferencesProvider) {
         this.userPreferencesProvider = userPreferencesProvider;
     }
 
@@ -39,13 +43,16 @@ public class ApplicationTokenInterceptor implements MethodInterceptor {
 
         ApplicationTokenRecord applicationRecord = null;
         try {
-            Field f = invocation.getMethod().getParameters()[0].getClass().getField("applicationToken");
+            Field f = invocation.getMethod().getParameters()[0].getType().getField("applicationToken");
+            System.out.println("***** applicationToken field="+f);
             Object argument0 = invocation.getArguments()[0];
+            System.out.println("***** argument0="+argument0);
 
             String applicationToken = f.get(argument0).toString();
+            LOG.log(Level.FINEST, ()->format("applicationToken read %s", applicationToken));
 
             applicationRecord =
-                    dsl.selectFrom(APPLICATION_TOKEN)
+                    dslProvider.get().selectFrom(APPLICATION_TOKEN)
                             .where(APPLICATION_TOKEN.APPLICATION_TOKEN_.eq(applicationToken))
                             .fetchOne();
 

@@ -1,19 +1,20 @@
 package com.tmjee.mychat.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.tmjee.jooq.generated.tables.records.AccessTokenRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.mychat.domain.IdentificationTypeEnum;
 import com.tmjee.mychat.domain.TokenStateEnum;
 import com.tmjee.mychat.rest.Logon;
 import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
+import com.tmjee.mychat.service.annotations.DSLContextAnnotation;
 import com.tmjee.mychat.service.annotations.TransactionAnnotation;
 import com.tmjee.mychat.service.annotations.UserPreferencesAnnotation;
 import com.tmjee.mychat.utils.DigestUtils;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 
-import static org.jooq.impl.DSL.*;
 import static com.tmjee.jooq.generated.Tables.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -25,20 +26,22 @@ import java.util.UUID;
  */
 public class LogonServices {
 
-    private final DSLContextProvider dslContextProvider;
-    private final UserPreferences userPreferences;
+    private final Provider<DSLContext> dslContextProvider;
+    private final Provider<UserPreferences> userPreferencesProvider;
 
     @Inject
-    public LogonServices(DSLContextProvider dslContextProvider,
-                         @UserPreferencesAnnotation UserPreferences userPreferences) {
+    public LogonServices(@DSLContextAnnotation Provider<DSLContext> dslContextProvider,
+                         @UserPreferencesAnnotation Provider<UserPreferences> userPreferencesProvider) {
         this.dslContextProvider = dslContextProvider;
-        this.userPreferences = userPreferences;
+        this.userPreferencesProvider = userPreferencesProvider;
     }
 
 
     @TransactionAnnotation
     @ApplicationTokenAnnotation
     public Logon.Res logon(Logon.Req req) throws NoSuchAlgorithmException {
+        System.out.println("**** userPreferences="+userPreferencesProvider);
+        System.out.println("**** userPreferences="+userPreferencesProvider.get());
         DSLContext context = dslContextProvider.get();
         System.out.println("******************************");
         Result<MychatUserRecord> result =
@@ -61,11 +64,11 @@ public class LogonServices {
                 String accessToken = UUID.randomUUID().toString();
 
                 Result<AccessTokenRecord> tokenRecord =
-                    insertInto(ACCESS_TOKEN,
-                        ACCESS_TOKEN.MYCHAT_USER_ID,
-                        ACCESS_TOKEN.ACCESS_TOKEN_,
-                        ACCESS_TOKEN.STATE,
-                        ACCESS_TOKEN.CREATION_DATE)
+                    context.insertInto(ACCESS_TOKEN,
+                            ACCESS_TOKEN.MYCHAT_USER_ID,
+                            ACCESS_TOKEN.ACCESS_TOKEN_,
+                            ACCESS_TOKEN.STATE,
+                            ACCESS_TOKEN.CREATION_DATE)
                         .values(myChatUserId,
                                 accessToken,
                                 TokenStateEnum.ACTIVE.name(),
@@ -73,10 +76,12 @@ public class LogonServices {
                         .returning()
                         .fetch();
 
-                userPreferences.setAccessToken(accessToken);
+                userPreferencesProvider.get().setAccessToken(accessToken);
 
                 System.out.println("****************************** success");
                 return Logon.Res.success(accessToken, myChatUserRecord);
+            } else {
+                return Logon.Res.failedBadUsernamePasswordCombination();
             }
         }
         System.out.println("****************************** failed");

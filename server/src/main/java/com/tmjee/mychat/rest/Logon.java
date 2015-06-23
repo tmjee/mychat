@@ -62,5 +62,12 @@ public class Logon extends V1<Logon.Req, Logon.Res> {
             res.addMessage("Logon failed");
             return res;
         }
+
+        public static Res failedBadUsernamePasswordCombination() {
+            Res res = new Res();
+            res.valid = false;
+            res.addMessage("Bad password/username combinations");
+            return res;
+        }
     }
 }

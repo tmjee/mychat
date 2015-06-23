@@ -24,14 +24,16 @@ public class MyChatExceptionMapper implements ExceptionMapper<Throwable> {
         if (throwable.getClass().isAssignableFrom(InvalidApplicationTokenException.class)) {
             V1.Res res = new V1.Res();
             res.valid = false;
-            res.addMessage("Invalid / Missing application token");
+            res.addMessage(throwable.getMessage());
+            LOGGER.log(Level.WARNING, "", throwable);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(res)
                     .build();
         } else if (throwable.getClass().isAssignableFrom(InvalidAccessTokenException.class)) {
             V1.Res res = new V1.Res();
             res.valid = false;
-            res.addMessage("Invalid / Missing access token");
+            res.addMessage(throwable.getMessage());
+            LOGGER.log(Level.WARNING, "", throwable);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(res)
                     .build();
