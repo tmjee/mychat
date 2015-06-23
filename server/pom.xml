@@ -18,6 +18,8 @@
         <jta.version>1.1</jta.version>
         <bonecp.version>0.8.0.RELEASE</bonecp.version>
         <postgresql.jdbc.driver.version>9.4-1201-jdbc41</postgresql.jdbc.driver.version>
+        <log4j.version>1.2.6</log4j.version>
+        <slf4j.version>1.7.2</slf4j.version>
     </properties>
 
     <dependencies>
@@ -98,6 +100,21 @@
             <groupId>javax.resource</groupId>
             <artifactId>javax.resource-api</artifactId>
             <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 

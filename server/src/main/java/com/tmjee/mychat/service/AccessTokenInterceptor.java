@@ -1,6 +1,7 @@
 package com.tmjee.mychat.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.tmjee.mychat.exception.InvalidAccessTokenException;
 import com.tmjee.mychat.service.annotations.UserPreferencesAnnotation;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -15,12 +16,11 @@ import static java.lang.String.format;
  */
 public class AccessTokenInterceptor implements MethodInterceptor {
 
-
-    private volatile UserPreferences userPreferences;
+    private volatile Provider<UserPreferences> userPreferencesProvider;
 
     @Inject
-    public void setUserPreferences(@UserPreferencesAnnotation UserPreferences userPreferences) {
-        this.userPreferences = userPreferences;
+    public void setUserPreferences(Provider<UserPreferences> userPreferencesProvider) {
+        this.userPreferencesProvider = userPreferencesProvider;
     }
 
     @Override
@@ -30,8 +30,8 @@ public class AccessTokenInterceptor implements MethodInterceptor {
             Object o = invocation.getArguments()[0];
             String accessToken = f.get(o).toString();
 
-            if (!accessToken.equals(userPreferences.getAccessToken())) {
-                throw new InvalidAccessTokenException(format("Invalid access token %s vs %s", userPreferences.getAccessToken(), accessToken));
+            if (!accessToken.equals(userPreferencesProvider.get().getAccessToken())) {
+                throw new InvalidAccessTokenException(format("Invalid access token %s vs %s", userPreferencesProvider.get().getAccessToken(), accessToken));
             }
         }catch(Exception e) {
             throw new InvalidAccessTokenException(format("unable to get access token field"));

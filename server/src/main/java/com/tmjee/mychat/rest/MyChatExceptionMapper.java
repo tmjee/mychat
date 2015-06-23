@@ -2,9 +2,10 @@ package com.tmjee.mychat.rest;
 
 import com.tmjee.mychat.exception.InvalidAccessTokenException;
 import com.tmjee.mychat.exception.InvalidApplicationTokenException;
-import org.glassfish.jersey.server.spi.ResponseErrorMapper;
+import com.tmjee.mychat.exception.MyChatException;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,20 +14,21 @@ import java.util.logging.Logger;
  * @author tmjee
  */
 @Provider
-public class MyChatResponseErrorMapper implements ResponseErrorMapper {
+public class MyChatExceptionMapper implements ExceptionMapper<Throwable> {
 
-    private static final Logger LOGGER = Logger.getLogger(MyChatResponseErrorMapper.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MyChatExceptionMapper.class.getName());
 
     @Override
     public Response toResponse(Throwable throwable) {
-        if (throwable instanceof InvalidApplicationTokenException) {
+
+        if (throwable.getClass().isAssignableFrom(InvalidApplicationTokenException.class)) {
             V1.Res res = new V1.Res();
             res.valid = false;
             res.addMessage("Invalid / Missing application token");
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(res)
                     .build();
-        } else if (throwable instanceof InvalidAccessTokenException) {
+        } else if (throwable.getClass().isAssignableFrom(InvalidAccessTokenException.class)) {
             V1.Res res = new V1.Res();
             res.valid = false;
             res.addMessage("Invalid / Missing access token");

@@ -45,31 +45,6 @@ public class MyChatServletModule extends ServletModule {
             LOG.log(Level.SEVERE, "unable to locate config.properties");
         }
 
-        MethodInterceptor transactionInterceptor = new TransactionInterceptor();
-        requestInjection(transactionInterceptor);
-
-        bindInterceptor(
-                Matchers.any(),
-                Matchers.annotatedWith(TransactionAnnotation.class),
-                transactionInterceptor);
-
-        bindInterceptor(
-                Matchers.annotatedWith(TransactionAnnotation.class),
-                Matchers.any(),
-                transactionInterceptor);
-
-        ApplicationTokenInterceptor applicationTokenInterceptor = new ApplicationTokenInterceptor();
-        requestInjection(applicationTokenInterceptor);
-
-        bindInterceptor(
-                Matchers.annotatedWith(ApplicationTokenAnnotation.class),
-                Matchers.any(),
-                applicationTokenInterceptor);
-
-        bindInterceptor(
-                Matchers.any(),
-                Matchers.annotatedWith(ApplicationTokenAnnotation.class),
-                applicationTokenInterceptor);
 
 
 
@@ -112,5 +87,45 @@ public class MyChatServletModule extends ServletModule {
                 .annotatedWith(LogonServiceAnnotation.class)
                 .to(LogonServices.class)
                 .in(Singleton.class);
+
+
+
+        MethodInterceptor transactionInterceptor = new TransactionInterceptor();
+        requestInjection(transactionInterceptor);
+
+        bindInterceptor(
+                Matchers.any(),
+                Matchers.annotatedWith(TransactionAnnotation.class),
+                transactionInterceptor);
+
+        bindInterceptor(
+                Matchers.annotatedWith(TransactionAnnotation.class),
+                Matchers.any(),
+                transactionInterceptor);
+
+        ApplicationTokenInterceptor applicationTokenInterceptor = new ApplicationTokenInterceptor();
+        requestInjection(applicationTokenInterceptor);
+
+        bindInterceptor(
+                Matchers.annotatedWith(ApplicationTokenAnnotation.class),
+                Matchers.any(),
+                applicationTokenInterceptor);
+
+        bindInterceptor(
+                Matchers.any(),
+                Matchers.annotatedWith(ApplicationTokenAnnotation.class),
+                applicationTokenInterceptor);
+
+        AccessTokenInterceptor accessTokenInterceptor = new AccessTokenInterceptor();
+        requestInjection(accessTokenInterceptor);
+
+        bindInterceptor(
+                Matchers.annotatedWith(AccessTokenAnnotation.class),
+                Matchers.any(),
+                accessTokenInterceptor);
+        bindInterceptor(
+                Matchers.any(),
+                Matchers.annotatedWith(AccessTokenAnnotation.class),
+                accessTokenInterceptor);
     }
 }

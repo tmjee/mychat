@@ -1,0 +1,26 @@
+
+Logon
+-----
+POST
+http://localhost:8080/v1/logon
+{
+    "email":"test@gmail.com",
+    "password":"test",
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
+}
+
+
+Register
+--------
+POST
+http://localhost:8080/v1/register
+{
+    "email":"toby@gmail.com",
+    "password":"test",
+    "fullname":"toby",
+    "gender":"MALE|FEMALE",
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
+}
+
+
+

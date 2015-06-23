@@ -1,16 +1,16 @@
 package com.tmjee.mychat.service;
 
 import com.google.inject.Inject;
-import com.tmjee.jooq.generated.tables.Token;
+import com.tmjee.jooq.generated.tables.records.AccessTokenRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.jooq.generated.tables.records.TokenRecord;
 import com.tmjee.mychat.domain.IdentificationTypeEnum;
 import com.tmjee.mychat.domain.TokenStateEnum;
 import com.tmjee.mychat.rest.Logon;
+import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
+import com.tmjee.mychat.service.annotations.TransactionAnnotation;
 import com.tmjee.mychat.service.annotations.UserPreferencesAnnotation;
 import com.tmjee.mychat.utils.DigestUtils;
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Result;
 
 import static org.jooq.impl.DSL.*;
@@ -36,6 +36,8 @@ public class LogonServices {
     }
 
 
+    @TransactionAnnotation
+    @ApplicationTokenAnnotation
     public Logon.Res logon(Logon.Req req) throws NoSuchAlgorithmException {
         DSLContext context = dslContextProvider.get();
         System.out.println("******************************");
@@ -58,12 +60,12 @@ public class LogonServices {
 
                 String accessToken = UUID.randomUUID().toString();
 
-                Result<TokenRecord> tokenRecord =
-                    insertInto(TOKEN,
-                        TOKEN.MYCHAT_USER_ID,
-                        TOKEN.TOKEN_,
-                        TOKEN.STATE,
-                        TOKEN.CREATION_DATE)
+                Result<AccessTokenRecord> tokenRecord =
+                    insertInto(ACCESS_TOKEN,
+                        ACCESS_TOKEN.MYCHAT_USER_ID,
+                        ACCESS_TOKEN.ACCESS_TOKEN_,
+                        ACCESS_TOKEN.STATE,
+                        ACCESS_TOKEN.CREATION_DATE)
                         .values(myChatUserId,
                                 accessToken,
                                 TokenStateEnum.ACTIVE.name(),

@@ -63,6 +63,7 @@ public class V1<REQ extends V1.Req, RES extends V1.Res> {
 
     public static abstract class Req {
 
+        public String applicationToken;
         public List<String> errors = new ArrayList<>();
 
         protected boolean hasValidationErrors() {
