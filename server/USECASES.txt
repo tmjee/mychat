@@ -4,7 +4,7 @@ Logon
 POST
 http://localhost:8080/v1/logon
 {
-    "email":"test@gmail.com",
+    "email":"toby@gmail.com",
     "password":"test",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
 }
@@ -23,4 +23,82 @@ http://localhost:8080/v1/register
 }
 
 
+Add Contact
+-----------
+POST
+http://localhost:8080/v1/contacts/add
+{
+    "myChatUserId":"...",
+    "contactMyChatUserId":"...",
+    "applicationToken":"...",
+    "accessToken":"...."
+}
+
+Accept Contact
+--------------
+POST
+http://localhost:8080/v1/contacts/accept
+{
+    "myChatUserId":"...",
+    "contactMyChatUserId":"...",
+    "applicationToken":"...",
+    "accessToken":"...."
+}
+
+
+Create Chat
+-----------
+POST
+http://localhost:8080/v1/chat/create
+{
+    "myChatUserId":"...",
+    "membersMyChatUserIds":[
+        "...","..."
+    ],
+    "name":"..."
+}
+
+
+Join Chat
+---------
+POST
+http://localhost:8080/v1/chat/join
+{
+    "myChatUserId":"...",
+    "membersMyChatUserIds":[
+        "...","..."
+    ]
+}
+
+
+Send Chat
+---------
+POST
+http://localhost:8080/v1/chat/send
+{
+    "myChatUserId":"...",
+    "chatId":"...",
+    "message":"..."
+}
+
+
+What's Up
+---------
+POST
+http://localhost:8080/v1/whatsup
+{
+    "myChatUserId":"...",
+    "whatsup":"...."
+}
+
+
+
+Update Location
+---------------
+POST
+http://localhost:8080/v1/mylocation
+{
+    "longitude":"...",
+    "latitude":"..."
+}
 

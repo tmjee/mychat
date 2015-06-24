@@ -10,8 +10,7 @@ import java.lang.annotation.Target;
 /**
  * @author tmjee
  */
-@BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface AccessTokenAnnotation {
 }

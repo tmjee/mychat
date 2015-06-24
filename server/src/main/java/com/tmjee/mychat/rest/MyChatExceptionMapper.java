@@ -25,7 +25,7 @@ public class MyChatExceptionMapper implements ExceptionMapper<Throwable> {
             V1.Res res = new V1.Res();
             res.valid = false;
             res.addMessage(throwable.getMessage());
-            LOGGER.log(Level.WARNING, "", throwable);
+            LOGGER.log(Level.FINEST, "", throwable);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(res)
                     .build();
@@ -33,7 +33,7 @@ public class MyChatExceptionMapper implements ExceptionMapper<Throwable> {
             V1.Res res = new V1.Res();
             res.valid = false;
             res.addMessage(throwable.getMessage());
-            LOGGER.log(Level.WARNING, "", throwable);
+            LOGGER.log(Level.FINEST, "", throwable);
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(res)
                     .build();

@@ -3,12 +3,15 @@ package com.tmjee.mychat.rest;
 import com.google.inject.Injector;
 import com.tmjee.mychat.MyChatFunction;
 import com.tmjee.mychat.MyChatGuiceServletContextListener;
+import com.tmjee.mychat.domain.RolesEnum;
 import com.tmjee.mychat.exception.MyChatException;
+import com.tmjee.mychat.exception.RoleAccessDeniedException;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -64,6 +67,7 @@ public class V1<REQ extends V1.Req, RES extends V1.Res> {
     public static abstract class Req {
 
         public String applicationToken;
+        public String accessToken;
         public List<String> errors = new ArrayList<>();
 
         protected boolean hasValidationErrors() {
@@ -87,5 +91,10 @@ public class V1<REQ extends V1.Req, RES extends V1.Res> {
             messages.add(message);
         }
 
+    }
+
+
+    public interface RolesAware {
+        void action(EnumSet<RolesEnum> rolesEnumSet) throws RoleAccessDeniedException;
     }
 }

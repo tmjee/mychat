@@ -7,9 +7,11 @@ import org.jooq.Record;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
 import static java.lang.String.format;
 import static com.tmjee.jooq.generated.Tables.*;
@@ -17,9 +19,11 @@ import static com.tmjee.jooq.generated.Tables.*;
 /**
  * @author tmjee
  */
+@Provider
 public class AddContacts extends V1<AddContacts.Req, AddContacts.Res> {
 
     @POST
+    @Path("/contacts/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addContacts(Req req) {

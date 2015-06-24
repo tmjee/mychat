@@ -42,25 +42,27 @@ public class ApplicationTokenInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
 
         ApplicationTokenRecord applicationRecord = null;
+        String applicationToken = null;
         try {
             Field f = invocation.getMethod().getParameters()[0].getType().getField("applicationToken");
             System.out.println("***** applicationToken field="+f);
             Object argument0 = invocation.getArguments()[0];
             System.out.println("***** argument0="+argument0);
 
-            String applicationToken = f.get(argument0).toString();
-            LOG.log(Level.FINEST, ()->format("applicationToken read %s", applicationToken));
+            applicationToken = f.get(argument0).toString();
+            String _applicationToken = applicationToken;
+            LOG.log(Level.FINEST, ()->format("applicationToken read %s", _applicationToken));
 
-            applicationRecord =
-                    dslProvider.get().selectFrom(APPLICATION_TOKEN)
-                            .where(APPLICATION_TOKEN.APPLICATION_TOKEN_.eq(applicationToken))
-                            .fetchOne();
-
-            if (applicationRecord == null) {
-                throw new InvalidApplicationTokenException(format("application token passed in [%s]", argument0));
-            }
         } catch(Exception e) {
             throw new InvalidApplicationTokenException(format("no field in parameters to identify application token"));
+        }
+        applicationRecord =
+                dslProvider.get().selectFrom(APPLICATION_TOKEN)
+                        .where(APPLICATION_TOKEN.APPLICATION_TOKEN_.eq(applicationToken))
+                        .fetchOne();
+
+        if (applicationRecord == null) {
+            throw new InvalidApplicationTokenException(format("no matching application token for the one passed in [%s]", applicationToken));
         }
 
         userPreferencesProvider.get().setApplicationToken(applicationRecord.getApplicationToken());

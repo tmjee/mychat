@@ -4,8 +4,10 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.tmjee.jooq.generated.tables.records.AccessTokenRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.mychat.domain.IdentificationTypeEnum;
-import com.tmjee.mychat.domain.TokenStateEnum;
+import com.tmjee.jooq.generated.tables.records.RoleRecord;
+import com.tmjee.mychat.domain.MyChatUserIdentificationTypeEnum;
+import com.tmjee.mychat.domain.AccessTokenStateEnum;
+import com.tmjee.mychat.domain.RolesEnum;
 import com.tmjee.mychat.rest.Logon;
 import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
 import com.tmjee.mychat.service.annotations.DSLContextAnnotation;
@@ -19,6 +21,8 @@ import static com.tmjee.jooq.generated.Tables.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -40,13 +44,10 @@ public class LogonServices {
     @TransactionAnnotation
     @ApplicationTokenAnnotation
     public Logon.Res logon(Logon.Req req) throws NoSuchAlgorithmException {
-        System.out.println("**** userPreferences="+userPreferencesProvider);
-        System.out.println("**** userPreferences="+userPreferencesProvider.get());
         DSLContext context = dslContextProvider.get();
-        System.out.println("******************************");
         Result<MychatUserRecord> result =
             context.selectFrom(MYCHAT_USER)
-                .where(MYCHAT_USER.IDENTIFICATION_TYPE.eq(IdentificationTypeEnum.EMAIL.name()))
+                .where(MYCHAT_USER.IDENTIFICATION_TYPE.eq(MyChatUserIdentificationTypeEnum.EMAIL.name()))
                 .and(MYCHAT_USER.IDENTIFICATION_TYPE.isNotNull())
                 .and(MYCHAT_USER.IDENTIFICATION.isNotNull())
                 .and(MYCHAT_USER.IDENTIFICATION.eq(req.email))
@@ -63,6 +64,7 @@ public class LogonServices {
 
                 String accessToken = UUID.randomUUID().toString();
 
+                // handle access token record
                 Result<AccessTokenRecord> tokenRecord =
                     context.insertInto(ACCESS_TOKEN,
                             ACCESS_TOKEN.MYCHAT_USER_ID,
@@ -71,20 +73,35 @@ public class LogonServices {
                             ACCESS_TOKEN.CREATION_DATE)
                         .values(myChatUserId,
                                 accessToken,
-                                TokenStateEnum.ACTIVE.name(),
+                                AccessTokenStateEnum.ACTIVE.name(),
                                 new Timestamp(System.currentTimeMillis()))
                         .returning()
                         .fetch();
 
+                String oldAccessToken = userPreferencesProvider.get().getAccessToken();
+                if (oldAccessToken != null) {
+                    context.update(ACCESS_TOKEN)
+                            .set(ACCESS_TOKEN.STATE, AccessTokenStateEnum.LOGOUT.name())
+                            .set(ACCESS_TOKEN.MODIFICATION_DATE, new Timestamp(System.currentTimeMillis()))
+                            .execute();
+                }
                 userPreferencesProvider.get().setAccessToken(accessToken);
 
-                System.out.println("****************************** success");
+                // handle roles
+                Result<RoleRecord> roleRecordsResult = context.selectFrom(ROLE).where(ROLE.MYCHAT_USER_ID.eq(myChatUserId)).fetch();
+                EnumSet<RolesEnum> roles = EnumSet.noneOf(RolesEnum.class);
+                Iterator<RoleRecord> i = roleRecordsResult.iterator();
+                while(i.hasNext()) {
+                    roles.add(RolesEnum.valueOf(i.next().getRole()));
+                }
+                userPreferencesProvider.get().setRoles(roles);
+
+
                 return Logon.Res.success(accessToken, myChatUserRecord);
             } else {
                 return Logon.Res.failedBadUsernamePasswordCombination();
             }
         }
-        System.out.println("****************************** failed");
         return Logon.Res.failed();
     }
 

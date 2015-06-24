@@ -90,6 +90,7 @@ public class MyChatServletModule extends ServletModule {
 
 
 
+        // TransactionInterceptor
         MethodInterceptor transactionInterceptor = new TransactionInterceptor();
         requestInjection(transactionInterceptor);
 
@@ -103,6 +104,7 @@ public class MyChatServletModule extends ServletModule {
                 Matchers.any(),
                 transactionInterceptor);
 
+        // ApplicationTokenInterceptor
         ApplicationTokenInterceptor applicationTokenInterceptor = new ApplicationTokenInterceptor();
         requestInjection(applicationTokenInterceptor);
 
@@ -116,6 +118,8 @@ public class MyChatServletModule extends ServletModule {
                 Matchers.annotatedWith(ApplicationTokenAnnotation.class),
                 applicationTokenInterceptor);
 
+
+        // AccessTokenInterceptor
         AccessTokenInterceptor accessTokenInterceptor = new AccessTokenInterceptor();
         requestInjection(accessTokenInterceptor);
 
@@ -127,5 +131,19 @@ public class MyChatServletModule extends ServletModule {
                 Matchers.any(),
                 Matchers.annotatedWith(AccessTokenAnnotation.class),
                 accessTokenInterceptor);
+
+        // RolesInterceptor
+        RolesInterceptor rolesInterceptor = new RolesInterceptor();
+        requestInjection(rolesInterceptor);
+
+        bindInterceptor(
+                Matchers.annotatedWith(RolesAnnotation.class),
+                Matchers.any(),
+                rolesInterceptor);
+        bindInterceptor(
+                Matchers.any(),
+                Matchers.annotatedWith(RolesAnnotation.class),
+                rolesInterceptor);
+
     }
 }

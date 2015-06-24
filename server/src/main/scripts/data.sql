@@ -47,4 +47,22 @@ VALUES
   ('5', '5', 'This is Biz', 'Biz', 'MALE', CURRENT_TIMESTAMP, NULL)
 ;
 
+INSERT INTO CHANNEL
+  (CHANNEL_ID, MYCHAT_USER_ID,  TYPE, TYPE_ID, CREATION_DATE)
+VALUES
+  ('1', '1', 'MYCHAT', '1', CURRENT_TIMESTAMP),
+  ('2', '2', 'MYCHAT', '2', CURRENT_TIMESTAMP),
+  ('3', '3', 'MYCHAT', '3', CURRENT_TIMESTAMP),
+  ('4', '4', 'MYCHAT', '4', CURRENT_TIMESTAMP),
+  ('5', '5', 'MYCHAT', '5', CURRENT_TIMESTAMP)
+;
 
+INSERT INTO ROLE
+  (ROLE_ID, MYCHAT_USER_ID, ROLE)
+VALUES
+  ('1', '1', 'USER'),
+  ('2', '2', 'USER'),
+  ('3', '3', 'USER'),
+  ('4', '4', 'USER'),
+  ('5', '5', 'USER')
+;

@@ -1,5 +1,9 @@
 package com.tmjee.mychat.service;
 
+import com.tmjee.mychat.domain.RolesEnum;
+
+import java.util.EnumSet;
+
 /**
  * @author tmjee
  */
@@ -7,6 +11,7 @@ public class UserPreferences {
 
     private String accessToken;
     private String applicationToken;
+    private EnumSet<RolesEnum> roles;
 
 
     public synchronized void setAccessToken(String accessToken) {
@@ -23,5 +28,13 @@ public class UserPreferences {
 
     public synchronized String getApplicationToken() {
         return applicationToken;
+    }
+
+    public synchronized void setRoles(EnumSet<RolesEnum> roles) {
+        this.roles = roles;
+    }
+
+    public synchronized EnumSet<RolesEnum> getRoles() {
+        return this.roles;
     }
 }
