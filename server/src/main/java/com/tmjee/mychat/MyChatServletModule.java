@@ -87,6 +87,18 @@ public class MyChatServletModule extends ServletModule {
                 .annotatedWith(LogonServiceAnnotation.class)
                 .to(LogonServices.class)
                 .in(Singleton.class);
+        bind(RegisterServices.class)
+                .annotatedWith(RegisterServiceAnnotation.class)
+                .to(RegisterServices.class)
+                .in(Singleton.class);
+        bind(ContactServices.class)
+                .annotatedWith(ContactServiceAnnotation.class)
+                .to(ContactServices.class)
+                .in(Singleton.class);
+        bind(ChatServices.class)
+                .annotatedWith(ChatServiceAnnotation.class)
+                .to(ChatServices.class)
+                .in(Singleton.class);
 
 
 
