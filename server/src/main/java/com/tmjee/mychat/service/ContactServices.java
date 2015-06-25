@@ -14,6 +14,7 @@ import com.tmjee.mychat.domain.ContactStatusEnum;
 import com.tmjee.mychat.domain.MyChatUserStatusEnum;
 import com.tmjee.mychat.rest.AcceptContacts;
 import com.tmjee.mychat.rest.AddContacts;
+import com.tmjee.mychat.rest.ContactDetails;
 import com.tmjee.mychat.rest.ListContacts;
 import com.tmjee.mychat.service.annotations.AccessTokenAnnotation;
 import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
@@ -163,5 +164,12 @@ public class ContactServices {
                 .fetch();
 
         return ListContacts.Res.success(req, total.value1(), resultOfRecords);
+    }
+
+    @TransactionAnnotation
+    @ApplicationTokenAnnotation
+    @AccessTokenAnnotation
+    public ContactDetails.Res contactDetails(ContactDetails.Req req) {
+        return null;
     }
 }

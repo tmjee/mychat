@@ -183,17 +183,22 @@ public class ChatServices {
     public ChatDetails.Res chatDetails(ChatDetails.Req req) {
         DSLContext dsl = dslProvider.get();
 
+        ChatRecord chatRecord =
+        dsl.selectFrom(CHAT)
+                .where(CHAT.CHAT_ID.eq(req.chatId))
+                .fetchOne();
 
+
+        Result<Record> chatMemberRecords =
         dsl.select()
-                .from(CHAT)
-                .leftOuterJoin(CHAT_MEMBER).on(CHAT_MEMBER.CHAT_ID.eq(CHAT.CHAT_ID))
+                .from(CHAT_MEMBER)
                 .leftOuterJoin(MYCHAT_USER).on(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
                 .leftOuterJoin(PROFILE).on(PROFILE.MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
-                .where(CHAT.CHAT_ID.eq(req.chatId))
+                .where(CHAT_MEMBER.CHAT_ID.eq(req.chatId))
                 .fetch();
 
 
-        Result<Record> chats =
+        Result<Record> chatMessageRecords =
         dsl.select()
                 .from(CHAT_MESSAGE)
                 .leftOuterJoin(CHAT_MEMBER).on(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID.eq(CHAT_MESSAGE.CHAT_MEMBER_ID))
@@ -202,6 +207,6 @@ public class ChatServices {
                 .where(CHAT_MESSAGE.CHAT_ID.eq(req.chatId))
                 .fetch();
 
-        return ChatDetails.Res.success(chattersMap, chats);
+        return ChatDetails.Res.success(chatRecord, chatMemberRecords, chatMessageRecords);
     }
 }

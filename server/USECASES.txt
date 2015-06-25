@@ -38,14 +38,42 @@ http://localhost:8080/v1/register
 Request:
 --------
 POST
-http://localhost:8080/v1/contacts/list
+http://localhost:8080/v1/contacts/{myChatUserId}/list
 {
-    "myChatUserId":"...",
     "offset":"10",
     "limit":"20",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
     "accessToken":"...."
 }
+
+
+
+=================================================================================================
+    Post Avatar
+=================================================================================================
+Request:
+--------
+POST
+http://localhost:8080/v1/avatar/{myChatUserId}/post
+{
+    "avatar":"...",
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
+    "accessToken":"...."
+}
+
+
+=================================================================================================
+    Get Avatar
+=================================================================================================
+Request:
+--------
+POST
+http://localhost:8080/v1/avatar/{myChatUserId}/get
+{
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
+    "accessToken":"...."
+}
+
 
 
 =================================================================================================
@@ -54,9 +82,8 @@ http://localhost:8080/v1/contacts/list
 Request:
 --------
 POST
-http://localhost:8080/v1/contacts/add
+http://localhost:8080/v1/contacts/{myChatUserId}/add
 {
-    "myChatUserId":"...",
     "contactMyChatUserId":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
     "accessToken":"...."
@@ -68,9 +95,8 @@ http://localhost:8080/v1/contacts/add
 Request:
 --------
 POST
-http://localhost:8080/v1/contacts/accept
+http://localhost:8080/v1/contacts/{myChatUserId}/accept
 {
-    "myChatUserId":"...",
     "contactMyChatUserId":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
@@ -85,9 +111,7 @@ POST
 http://localhost:8080/v1/contacts/{myChatUserId}/details
 {
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
-    "accessToken":"....",
-    "offset":"...",
-    "limit":"..."
+    "accessToken":"...."
 }
 
 =================================================================================================
@@ -96,9 +120,8 @@ http://localhost:8080/v1/contacts/{myChatUserId}/details
 Request:
 --------
 POST
-http://localhost:8080/v1/chat/create
+http://localhost:8080/v1/chats/{myChatUserId}/create
 {
-    "myChatUserId":"...",
     "membersMyChatUserIds":[
         "...","..."
     ],
@@ -114,9 +137,8 @@ http://localhost:8080/v1/chat/create
 Request:
 --------
 POST
-http://localhost:8080/v1/chat/join
+http://localhost:8080/v1/chats/{chatId}/join
 {
-    "chatId":"....",
     "myChatUserId":"...",
     "membersMyChatUserIds":[
         "...","..."
@@ -132,10 +154,9 @@ http://localhost:8080/v1/chat/join
 Request:
 --------
 POST
-http://localhost:8080/v1/chat/send
+http://localhost:8080/v1/chats/{chatId}/send
 {
     "myChatUserId":"...",
-    "chatId":"...",
     "message":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"..."
@@ -147,9 +168,8 @@ http://localhost:8080/v1/chat/send
 Request:
 --------
 POST
-http://localhost:8080/v1/chat/list
+http://localhost:8080/v1/chats/{myChatUserId}/list
 {
-    "myChatUserId":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...",
     "offset":"10",
@@ -162,7 +182,7 @@ http://localhost:8080/v1/chat/list
 Request:
 --------
 POST
-http://localhost:8080/v1/chat/{chatId}/details
+http://localhost:8080/v1/chats/{chatId}/details
 {
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...",
@@ -175,10 +195,9 @@ http://localhost:8080/v1/chat/{chatId}/details
 =================================================================================================
 Request:
 --------
-POST http://localhost:8080/v1/chat/leave
+POST http://localhost:8080/v1/chats/{chatId}/leave
 {
     "myChatUserId":"...",
-    "chatId":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"..."
 }
@@ -216,6 +235,35 @@ http://localhost:8080/v1/location
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
+
+
+=================================================================================================
+    List Moments
+=================================================================================================
+Request:
+--------
+POST
+http://localhost:8080/v1/moments/{myChatUserId}/list
+{
+    "offset":"...",
+    "limit":"...",
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
+    "accessToken":"...."
+}
+
+
+=================================================================================================
+    Post Moment
+=================================================================================================
+Request:
+--------
+POST
+http://localhost:8080/v1/moments/{myChatUserId}/post
+{
+    "message":"...",
+    "image":"..."
+}
+
 
 
 
