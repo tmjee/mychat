@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.tmjee.jooq.generated.tables.records.ChannelRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.jooq.generated.tables.records.ProfileRecord;
 import com.tmjee.mychat.domain.ChannelTypeEnum;
 import com.tmjee.mychat.domain.MyChatUserIdentificationTypeEnum;
 import com.tmjee.mychat.domain.MyChatUserStatusEnum;
@@ -82,6 +83,22 @@ public class RegisterServices {
 
 
         if (record.isNotEmpty()) {
+
+            Result<ProfileRecord> profileRecord =
+                    dslProvider.get().insertInto(PROFILE,
+                            PROFILE.WHATSUP,
+                            PROFILE.CREATION_DATE,
+                            PROFILE.FULLNAME,
+                            PROFILE.GENDER)
+                    .values(
+                            "",
+                            new Timestamp(System.currentTimeMillis()),
+                            req.fullname,
+                            req.gender.name()
+                    ).returning().fetch();
+
+
+
             Result<ChannelRecord> channelRecord =
                 dslProvider.get().insertInto(CHANNEL,
                     CHANNEL.CREATION_DATE,
@@ -96,10 +113,15 @@ public class RegisterServices {
                     .returning()
                     .fetch();
 
-            if (channelRecord.isNotEmpty()) {
+            if (channelRecord.isNotEmpty() && profileRecord.isNotEmpty()) {
                 return Register.Res.success(record.get(0), channelRecord.get(0));
             } else {
-                LOG.log(Level.SEVERE, format("no record inserted into CHANNEL table for MYCHAT_USER_ID %s", record.get(0).getMychatUserId()));
+                if (channelRecord.isEmpty()) {
+                    LOG.log(Level.SEVERE, format("no record inserted into CHANNEL table for MYCHAT_USER_ID %s", record.get(0).getMychatUserId()));
+                }
+                if (profileRecord.isEmpty()) {
+                    LOG.log(Level.SEVERE, format("no record inserted into PROFILE table for MYCHAT_USER_ID %s", record.get(0).getMychatUserId()));
+                }
             }
         } else {
             LOG.log(Level.SEVERE, format("no record inserted into MYCHAT_USER table for identification %s", req.email));

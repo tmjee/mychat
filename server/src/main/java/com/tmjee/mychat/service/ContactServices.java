@@ -11,14 +11,17 @@ import com.tmjee.jooq.generated.tables.Profile;
 import com.tmjee.jooq.generated.tables.records.ContactRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.mychat.domain.ContactStatusEnum;
+import com.tmjee.mychat.domain.MyChatUserStatusEnum;
 import com.tmjee.mychat.rest.AcceptContacts;
 import com.tmjee.mychat.rest.AddContacts;
+import com.tmjee.mychat.rest.ListContacts;
 import com.tmjee.mychat.service.annotations.AccessTokenAnnotation;
 import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
 import com.tmjee.mychat.service.annotations.DSLContextAnnotation;
 import com.tmjee.mychat.service.annotations.TransactionAnnotation;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
 
 import java.sql.Timestamp;
@@ -134,5 +137,31 @@ public class ContactServices {
         } else {
             return AcceptContacts.Res.failureNoPendingAccept();
         }
+    }
+
+
+    @TransactionAnnotation
+    @ApplicationTokenAnnotation
+    @AccessTokenAnnotation
+    public ListContacts.Res listContacts(ListContacts.Req req) {
+        DSLContext dsl = dslProvider.get();
+            Record1<Integer> total = dsl.selectCount()
+                    .from(CONTACT)
+                    .leftOuterJoin(MYCHAT_USER).on(MYCHAT_USER.MYCHAT_USER_ID.eq(CONTACT.CONTACT_MYCHAT_USER_ID))
+                    .where(CONTACT.MYCHAT_USER_ID.eq(req.myChatUserId))
+                    .and(MYCHAT_USER.STATUS.eq(MyChatUserStatusEnum.ACTIVE.name()))
+                    .fetchOne();
+
+            Result<Record> resultOfRecords = dsl.select()
+                .from(CONTACT)
+                .leftOuterJoin(MYCHAT_USER).on(MYCHAT_USER.MYCHAT_USER_ID.eq(CONTACT.CONTACT_MYCHAT_USER_ID))
+                .leftOuterJoin(PROFILE).on(PROFILE.MYCHAT_USER_ID.eq(CONTACT.CONTACT_MYCHAT_USER_ID))
+                .where(CONTACT.MYCHAT_USER_ID.eq(req.myChatUserId))
+                .and(MYCHAT_USER.STATUS.eq(MyChatUserStatusEnum.ACTIVE.name()))
+                .limit(req.limit)
+                .offset(req.offset)
+                .fetch();
+
+        return ListContacts.Res.success(req, total.value1(), resultOfRecords);
     }
 }

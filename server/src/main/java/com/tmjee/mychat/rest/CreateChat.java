@@ -1,8 +1,13 @@
 package com.tmjee.mychat.rest;
 
+import com.tmjee.jooq.generated.Tables;
 import com.tmjee.jooq.generated.tables.ChatMember;
+import com.tmjee.jooq.generated.tables.Profile;
 import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
 import com.tmjee.jooq.generated.tables.records.ChatRecord;
+import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.jooq.generated.tables.records.ProfileRecord;
+import com.tmjee.mychat.domain.ChatMemberStatusEnum;
 import com.tmjee.mychat.service.ChatServices;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -13,10 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -56,18 +58,23 @@ public class CreateChat extends V1<CreateChat.Req, CreateChat.Res> {
 
         public List<Map<String, String>> members;
 
-        public static Res success(ChatRecord chatRecord, Result<Record> chatMemberResult) {
+        public static Res success(ChatRecord chatRecord, Result<Record> chatMemberJoinMyChatUserJoinProfileResult) {
             Res res = new Res();
+            res.members = new ArrayList<>();
             res.addMessage(format("chat %s created", chatRecord.getName()));
-            Iterator i = chatMemberResult.iterator();
+            Iterator<Record> i = chatMemberJoinMyChatUserJoinProfileResult.iterator();
             while(i.hasNext()) {
                 Map<String, String> m = new HashMap<>();
-                Record o = (Record) i.next();
-                //m.put("name" , o.get
-                m.put("myChatUserId", o.getValue()getChatMemberMychatUserId().toString());
-                m.put("status", o.getChatMemberMychatUserId().toString());
+                Record o =  i.next();
 
+                MychatUserRecord mychatUserRecord = o.into(Tables.MYCHAT_USER);
+                ChatMemberRecord chatMemberRecord = o.into(Tables.CHAT_MEMBER);
+                ProfileRecord profile = o.into(Tables.PROFILE);
 
+                m.put("name", profile.getFullname());
+                m.put("myChatUserId", mychatUserRecord.getMychatUserId().toString());
+                m.put("status", chatMemberRecord.getStatus());
+                res.members.add(m);
             }
             return res;
         }

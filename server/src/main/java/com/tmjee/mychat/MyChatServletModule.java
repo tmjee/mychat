@@ -82,6 +82,10 @@ public class MyChatServletModule extends ServletModule {
             .toProvider(ObjectMapperProvider.class)
             .in(Singleton.class);
 
+
+
+
+
         // Services
         bind(LogonServices.class)
                 .annotatedWith(LogonServiceAnnotation.class)
@@ -98,6 +102,14 @@ public class MyChatServletModule extends ServletModule {
         bind(ChatServices.class)
                 .annotatedWith(ChatServiceAnnotation.class)
                 .to(ChatServices.class)
+                .in(Singleton.class);
+        bind(PersonalServices.class)
+                .annotatedWith(PersonalServicesAnnotation.class)
+                .to(PersonalServices.class)
+                .in(Singleton.class);
+        bind(LocationServices.class)
+                .annotatedWith(LocationServicesAnnotation.class)
+                .to(LocationServices.class)
                 .in(Singleton.class);
 
 

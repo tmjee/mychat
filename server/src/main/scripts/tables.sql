@@ -3,9 +3,6 @@
 -- add user user1 with password 'password'  -- add user1 with password
 
 
-
-
-
 -- TABLE MYCHAT_USER
 DROP TABLE IF EXISTS MYCHAT_USER CASCADE;
 DROP SEQUENCE IF EXISTS SEQ_MYCHAT_USER CASCADE;
