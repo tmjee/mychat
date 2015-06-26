@@ -10,8 +10,11 @@ import com.tmjee.mychat.service.ContactServices;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.util.*;
@@ -25,7 +28,9 @@ public class ListContacts extends V1<ListContacts.Req, ListContacts.Res>{
 
 
     @POST
-    @Path("/contacts/list")
+    @Path("/contacts/{myChatUserId}/list")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response listContacts(Req req) {
         return action(req, this::f);
     }

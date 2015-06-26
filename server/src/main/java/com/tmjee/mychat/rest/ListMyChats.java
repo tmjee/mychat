@@ -26,11 +26,11 @@ import static com.tmjee.jooq.generated.Tables.*;
  * @author tmjee
  */
 @Provider
-public class ListChats extends V1<ListChats.Req, ListChats.Res> {
+public class ListMyChats extends V1<ListMyChats.Req, ListMyChats.Res> {
 
 
     @POST
-    @Path("/chat/list")
+    @Path("/mychats/{myChatUserId}/list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response listChats(Req req) {

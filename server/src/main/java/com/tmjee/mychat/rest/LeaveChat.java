@@ -23,7 +23,7 @@ import static java.lang.String.format;
 public class LeaveChat extends V1<LeaveChat.Req, LeaveChat.Res> {
 
     @POST
-    @Path("/chat/leave")
+    @Path("/chats/{chatId}/leave")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response leaveChat(Req req) {

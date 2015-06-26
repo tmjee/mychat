@@ -111,6 +111,10 @@ public class MyChatServletModule extends ServletModule {
                 .annotatedWith(LocationServicesAnnotation.class)
                 .to(LocationServices.class)
                 .in(Singleton.class);
+        bind(ProfileServices.class)
+                .annotatedWith(ProfileServicesAnnotation.class)
+                .to(ProfileServices.class)
+                .in(Singleton.class);
 
 
 

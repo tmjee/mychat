@@ -103,12 +103,12 @@ http://localhost:8080/v1/contacts/{myChatUserId}/accept
 }
 
 =================================================================================================
-    Contact Details
+    Profile
 =================================================================================================
 Request:
 --------
 POST
-http://localhost:8080/v1/contacts/{myChatUserId}/details
+http://localhost:8080/v1/profile/{myChatUserId}
 {
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
@@ -120,10 +120,11 @@ http://localhost:8080/v1/contacts/{myChatUserId}/details
 Request:
 --------
 POST
-http://localhost:8080/v1/chats/{myChatUserId}/create
+http://localhost:8080/v1/mychats/{myChatUserId}/create
 {
     "membersMyChatUserIds":[
-        "...","..."
+        "...",
+        "..."
     ],
     "name":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
@@ -168,7 +169,7 @@ http://localhost:8080/v1/chats/{chatId}/send
 Request:
 --------
 POST
-http://localhost:8080/v1/chats/{myChatUserId}/list
+http://localhost:8080/v1/mychats/{myChatUserId}/list
 {
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...",
@@ -238,7 +239,7 @@ http://localhost:8080/v1/location
 
 
 =================================================================================================
-    List Moments
+    List Moments (*)
 =================================================================================================
 Request:
 --------
@@ -253,7 +254,7 @@ http://localhost:8080/v1/moments/{myChatUserId}/list
 
 
 =================================================================================================
-    Post Moment
+    Post Moment (*)
 =================================================================================================
 Request:
 --------
@@ -262,6 +263,8 @@ http://localhost:8080/v1/moments/{myChatUserId}/post
 {
     "message":"...",
     "image":"..."
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
+    "accessToken":"...."
 }
 
 

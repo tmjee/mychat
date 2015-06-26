@@ -39,7 +39,7 @@ public class ChatServices {
     @TransactionAnnotation
     @ApplicationTokenAnnotation
     @AccessTokenAnnotation
-    public CreateChat.Res createChat(CreateChat.Req req) {
+    public CreateMyChat.Res createChat(CreateMyChat.Req req) {
         DSLContext dsl = dslProvider.get();
 
         // CHAT
@@ -71,7 +71,7 @@ public class ChatServices {
                 .and(CHAT_MEMBER.CHAT_ID.eq(chatRecord.getChatId()))
                 .fetch();
 
-        return CreateChat.Res.success(chatRecord, chatMemberJoinMyChatUseJoinProfileResult);
+        return CreateMyChat.Res.success(chatRecord, chatMemberJoinMyChatUseJoinProfileResult);
     }
 
 
@@ -130,7 +130,7 @@ public class ChatServices {
     @TransactionAnnotation
     @ApplicationTokenAnnotation
     @AccessTokenAnnotation
-    public ListChats.Res listChats(ListChats.Req req) {
+    public ListMyChats.Res listChats(ListMyChats.Req req) {
         DSLContext dsl = dslProvider.get();
 
         Map<Integer, List<Record>> m = dsl.select()
@@ -147,7 +147,7 @@ public class ChatServices {
                             Collectors.groupingBy(r->r.getValue(CHAT.CHAT_ID))
                         )
         ;
-        return ListChats.Res.success(m);
+        return ListMyChats.Res.success(m);
     }
 
 

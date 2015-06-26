@@ -1,19 +1,17 @@
 package com.tmjee.mychat.rest;
 
 import com.tmjee.jooq.generated.Tables;
-import com.tmjee.jooq.generated.tables.ChatMember;
-import com.tmjee.jooq.generated.tables.Profile;
 import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
 import com.tmjee.jooq.generated.tables.records.ChatRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.jooq.generated.tables.records.ProfileRecord;
-import com.tmjee.mychat.domain.ChatMemberStatusEnum;
 import com.tmjee.mychat.service.ChatServices;
 import org.jooq.Record;
 import org.jooq.Result;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -26,9 +24,10 @@ import static java.lang.String.format;
  * Created by tmjee on 24/06/15.
  */
 @Provider
-public class CreateChat extends V1<CreateChat.Req, CreateChat.Res> {
+public class CreateMyChat extends V1<CreateMyChat.Req, CreateMyChat.Res> {
 
     @POST
+    @Path("/mychats/{myChatUserId}/create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createChat(Req req) {

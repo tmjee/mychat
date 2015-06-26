@@ -3,6 +3,11 @@ package com.tmjee.mychat.rest;
 import com.tmjee.jooq.generated.tables.records.ChatMessageRecord;
 import com.tmjee.mychat.service.ChatServices;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -13,6 +18,10 @@ import javax.ws.rs.ext.Provider;
 public class SendChat extends V1<SendChat.Req, SendChat.Res> {
 
 
+    @POST
+    @Path("/chats/{chatId}/send")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response sendChat(Req req) {
         return action(req, this::f);
     }

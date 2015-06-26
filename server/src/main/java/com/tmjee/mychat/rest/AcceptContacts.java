@@ -19,7 +19,7 @@ public class AcceptContacts extends V1<AcceptContacts.Req, AcceptContacts.Res> {
 
 
     @POST
-    @Path("/contacts/accept")
+    @Path("/contacts/{myChatUserId}/accept")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response acceptContacts(Req req) {

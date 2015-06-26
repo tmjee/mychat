@@ -5,16 +5,13 @@ import static com.tmjee.jooq.generated.Tables.*;
 import static java.lang.String.format;
 
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.tables.Contact;
 import com.tmjee.jooq.generated.tables.MychatUser;
-import com.tmjee.jooq.generated.tables.Profile;
 import com.tmjee.jooq.generated.tables.records.ContactRecord;
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.mychat.domain.ContactStatusEnum;
 import com.tmjee.mychat.domain.MyChatUserStatusEnum;
 import com.tmjee.mychat.rest.AcceptContacts;
 import com.tmjee.mychat.rest.AddContacts;
-import com.tmjee.mychat.rest.ContactDetails;
+import com.tmjee.mychat.rest.Profile;
 import com.tmjee.mychat.rest.ListContacts;
 import com.tmjee.mychat.service.annotations.AccessTokenAnnotation;
 import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
@@ -26,7 +23,6 @@ import org.jooq.Record1;
 import org.jooq.Result;
 
 import java.sql.Timestamp;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -84,7 +80,7 @@ public class ContactServices {
                     .fetchOne();
 
             MychatUser myChatUser = MYCHAT_USER.as("m");
-            Profile profile = PROFILE.as("p");
+            com.tmjee.jooq.generated.tables.Profile profile = PROFILE.as("p");
             Record contactMyChatUser = dsl
                     .select(profile.fields())
                     .from(myChatUser)
@@ -97,7 +93,7 @@ public class ContactServices {
         }
 
         MychatUser myChatUser = MYCHAT_USER.as("m");
-        Profile profile = PROFILE.as("p");
+        com.tmjee.jooq.generated.tables.Profile profile = PROFILE.as("p");
         Record contactMyChatUser = dsl
                 .select(profile.fields())
                 .from(myChatUser)
@@ -166,10 +162,4 @@ public class ContactServices {
         return ListContacts.Res.success(req, total.value1(), resultOfRecords);
     }
 
-    @TransactionAnnotation
-    @ApplicationTokenAnnotation
-    @AccessTokenAnnotation
-    public ContactDetails.Res contactDetails(ContactDetails.Req req) {
-        return null;
-    }
 }

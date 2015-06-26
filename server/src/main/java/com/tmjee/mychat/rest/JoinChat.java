@@ -3,6 +3,12 @@ package com.tmjee.mychat.rest;
 import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
 import com.tmjee.mychat.service.ChatServices;
 
+import javax.print.attribute.standard.Media;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
@@ -15,6 +21,10 @@ import java.util.List;
 public class JoinChat extends V1<JoinChat.Req, JoinChat.Res> {
 
 
+    @POST
+    @Path("/chats/{chatId}/join")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response joinChat(JoinChat.Req req) {
        return action(req, this::f);
     }

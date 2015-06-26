@@ -23,7 +23,7 @@ import static com.tmjee.jooq.generated.Tables.*;
 public class AddContacts extends V1<AddContacts.Req, AddContacts.Res> {
 
     @POST
-    @Path("/contacts/add")
+    @Path("/contacts/{myChatUserId}/add")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addContacts(Req req) {
