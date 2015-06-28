@@ -173,5 +173,10 @@ public class MyChatServletModule extends ServletModule {
                 Matchers.annotatedWith(RolesAnnotation.class),
                 rolesInterceptor);
 
+
+
+        // servlets
+        serve("/mychat/images/*").with(MyChatImageServlet.class);
+
     }
 }

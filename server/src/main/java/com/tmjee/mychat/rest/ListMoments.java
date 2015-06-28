@@ -4,6 +4,7 @@ import com.tmjee.jooq.generated.Tables;
 import com.tmjee.jooq.generated.tables.records.MomentRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.jooq.generated.tables.records.ProfileRecord;
+import com.tmjee.mychat.MyChatImageServlet;
 import com.tmjee.mychat.service.MomentServices;
 import org.glassfish.jersey.message.internal.MediaTypes;
 import org.jooq.Record;
@@ -61,6 +62,7 @@ public class ListMoments  extends V1<ListMoments.Req, ListMoments.Res> {
         public static Res success(Result<Record> r) {
             Res res = new Res();
             res.moments = new ArrayList<>();
+            res.addMessage("Moment retrived succcessfully");
             Iterator<Record> i = r.iterator();
             while(i.hasNext()) {
                 Map<String, String> m = new HashMap<>();
@@ -70,15 +72,13 @@ public class ListMoments  extends V1<ListMoments.Req, ListMoments.Res> {
                 MychatUserRecord mychatUserRecord = rec.into(Tables.MYCHAT_USER);
                 ProfileRecord profileRecord = rec.into(Tables.PROFILE);
 
-                m.put("myChatUserId", mychatUserRecord.getMychatUserId());
-                m.put("momentId", momentRecord.getMomentId());
+                m.put("myChatUserId", mychatUserRecord.getMychatUserId().toString());
+                m.put("momentId", momentRecord.getMomentId().toString());
                 m.put("message", momentRecord.getMessage());
-                m.put("image", momentRecord.getEncoded());
+                m.put("image", MyChatImageServlet.MOMENT_URI_PREFIX+momentRecord.getMomentId());
+                m.put("creationDate", momentRecord.getCreationDate().toString());
 
-
-
-
-
+                res.moments.add(m);
             }
             return res;
         }
