@@ -165,7 +165,7 @@
                                     <inputSchema>public</inputSchema>
                                 </database>
                                 <target>
-                                    <packageName>com.tmjee.jooq.generated</packageName>
+                                    <packageName>com.tmjee.mychat.server.jooq.generated</packageName>
                                     <directory>${basedir}/src/main/generated-sources</directory>
                                 </target>
                             </generator>

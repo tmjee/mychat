@@ -6,10 +6,10 @@
 
 
     <listener>
-        <listener-class>com.tmjee.mychat.MyChatGuiceServletContextListener</listener-class>
+        <listener-class>com.tmjee.mychat.server.MyChatGuiceServletContextListener</listener-class>
     </listener>
     <listener>
-        <listener-class>com.tmjee.mychat.MyChatCleanupContextListener</listener-class>
+        <listener-class>com.tmjee.mychat.server.MyChatCleanupContextListener</listener-class>
     </listener>
 
     <filter>
@@ -23,15 +23,15 @@
         <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.tmjee.mychat.rest.MyChatResourceConfig</param-value>
+            <param-value>com.tmjee.mychat.server.rest.MyChatResourceConfig</param-value>
         </init-param>
         <!--
         <init-param>
             <param-name>jersey.config.server.provider.classnames</param-name>
             <param-value>
-                com.tmjee.mychat.rest.MyChatResponseErrorMapper,
+                MyChatResponseErrorMapper,
 
-                com.tmjee.mychat.rest.Logon
+                Logon
             </param-value>
         </init-param>
         -->
