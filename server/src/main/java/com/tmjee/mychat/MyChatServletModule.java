@@ -176,6 +176,7 @@ public class MyChatServletModule extends ServletModule {
 
 
         // servlets
+        bind(MyChatImageServlet.class).in(Singleton.class);
         serve("/mychat/images/*").with(MyChatImageServlet.class);
 
     }

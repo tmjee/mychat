@@ -3,6 +3,7 @@ package com.tmjee.mychat;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.tmjee.jooq.generated.Tables;
+import com.tmjee.mychat.service.annotations.DSLContextAnnotation;
 import org.jooq.DSLContext;
 
 import javax.servlet.ServletException;
@@ -35,7 +36,7 @@ public class MyChatImageServlet extends HttpServlet {
     private Provider<DSLContext> dslProvider;
 
     @Inject
-    public void setDslProvider(Provider<DSLContext> dslProvider) {
+    public void setDslProvider(@DSLContextAnnotation Provider<DSLContext> dslProvider) {
         this.dslProvider = dslProvider;
     }
 

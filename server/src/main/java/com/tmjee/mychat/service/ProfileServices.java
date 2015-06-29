@@ -1,5 +1,6 @@
 package com.tmjee.mychat.service;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.tmjee.jooq.generated.Tables;
 import com.tmjee.jooq.generated.tables.records.AvatarRecord;
@@ -8,12 +9,12 @@ import com.tmjee.mychat.rest.PostAvatar;
 import com.tmjee.mychat.rest.Profile;
 import com.tmjee.mychat.service.annotations.AccessTokenAnnotation;
 import com.tmjee.mychat.service.annotations.ApplicationTokenAnnotation;
+import com.tmjee.mychat.service.annotations.DSLContextAnnotation;
 import com.tmjee.mychat.service.annotations.TransactionAnnotation;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +28,8 @@ public class ProfileServices {
 
     private final Provider<DSLContext> dslProvider;
 
-    public ProfileServices(Provider<DSLContext> dslProvider) {
+    @Inject
+    public ProfileServices(@DSLContextAnnotation Provider<DSLContext> dslProvider) {
         this.dslProvider = dslProvider;
     }
 
