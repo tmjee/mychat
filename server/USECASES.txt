@@ -12,9 +12,21 @@ http://localhost:8080/v1/logon
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
 }
 
-Response:
----------
+Response #1:
+------------
+{
+    "messages":["Logon success"],
+    "valid":true,
+    "accessToken":"2df4a970-7329-4e5f-ba68-2f40a8e60ae7"
+}
 
+Respoonse #2:
+-------------
+{
+    "messages":["Bad password/username combinations"],
+    "valid":false,
+    "accessToken":null
+}
 
 
 =================================================================================================
@@ -42,8 +54,8 @@ http://localhost:8080/v1/contacts/{myChatUserId}/list
 {
     "offset":"10",
     "limit":"20",
-    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
-    "accessToken":"...."
+    "applicationtoken":"d5b87197-495c-47ca-959d-332921004a52"
+    "accesstoken":"...."
 }
 
 

@@ -1,6 +1,5 @@
-package com.tmjee.mychat.server;
+package com.tmjee.mychat.client;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.*;
 
@@ -13,7 +12,7 @@ import java.util.Map;
 /**
  * @author tmjee
  */
-public class TestUtils {
+public class Utils {
 
     public static final ObjectMapper objectMapper = new ObjectMapper();
     public static final OkHttpClient okHttpClient = new OkHttpClient();
@@ -43,5 +42,4 @@ public class TestUtils {
         Response resp = okHttpClient.newCall(req).execute();
         return objectMapper.readValue(resp.body().string(), Map.class);
     }
-
 }

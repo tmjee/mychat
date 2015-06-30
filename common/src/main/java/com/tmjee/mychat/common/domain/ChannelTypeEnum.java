@@ -1,4 +1,4 @@
-package com.tmjee.mychat.server.domain;
+package com.tmjee.mychat.common.domain;
 
 /**
  * @author tmjee

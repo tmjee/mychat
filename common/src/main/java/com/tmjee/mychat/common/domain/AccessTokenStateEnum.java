@@ -1,4 +1,4 @@
-package com.tmjee.mychat.server.domain;
+package com.tmjee.mychat.common.domain;
 
 /**
  * Created by tmjee on 16/06/15.

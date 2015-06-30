@@ -8,6 +8,7 @@ import com.tmjee.mychat.server.exception.RoleAccessDeniedException;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * @author tmjee
  */
+@Provider
 @Path("/v1")
 public class V1<REQ extends V1.Req, RES extends V1.Res> {
 
