@@ -1,7 +1,7 @@
 package com.tmjee.mychat.server.rest;
 
 import com.tmjee.jooq.generated.tables.records.ContactRecord;
-import com.tmjee.mychat.server.domain.ContactStatusEnum;
+import com.tmjee.mychat.common.domain.ContactStatusEnum;
 import com.tmjee.mychat.server.service.ContactServices;
 import org.jooq.Record;
 

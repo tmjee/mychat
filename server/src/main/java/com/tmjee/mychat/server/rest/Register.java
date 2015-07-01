@@ -2,7 +2,7 @@ package com.tmjee.mychat.server.rest;
 
 import com.tmjee.jooq.generated.tables.records.ChannelRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.mychat.server.domain.GenderEnum;
+import com.tmjee.mychat.common.domain.GenderEnum;
 import com.tmjee.mychat.server.service.RegisterServices;
 
 import javax.ws.rs.Consumes;
@@ -31,7 +31,6 @@ public class Register extends V1<Register.Req, Register.Res> {
     }
 
     public Res g(Req req) throws NoSuchAlgorithmException {
-        System.out.println("****** "+req.gender);
         RegisterServices registerServices = getInstance(RegisterServices.class);
         return registerServices.register(req);
     }

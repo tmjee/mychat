@@ -1,11 +1,9 @@
 package com.tmjee.mychat.client;
 
 
-import com.tmjee.mychat.common.domain.GenderEnum;
 import org.junit.Test;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import static com.tmjee.mychat.client.Static.*;

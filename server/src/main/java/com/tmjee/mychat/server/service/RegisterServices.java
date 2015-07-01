@@ -5,9 +5,9 @@ import com.google.inject.Provider;
 import com.tmjee.jooq.generated.tables.records.ChannelRecord;
 import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.jooq.generated.tables.records.ProfileRecord;
-import com.tmjee.mychat.server.domain.ChannelTypeEnum;
-import com.tmjee.mychat.server.domain.MyChatUserIdentificationTypeEnum;
-import com.tmjee.mychat.server.domain.MyChatUserStatusEnum;
+import com.tmjee.mychat.common.domain.*;
+import com.tmjee.mychat.server.jooq.generated.Tables;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ActivationRecord;
 import com.tmjee.mychat.server.rest.Register;
 import com.tmjee.mychat.server.service.annotations.ApplicationTokenAnnotation;
 import com.tmjee.mychat.server.service.annotations.DSLContextAnnotation;
@@ -44,8 +44,9 @@ public class RegisterServices {
     @ApplicationTokenAnnotation
     public Register.Res register(Register.Req req) throws NoSuchAlgorithmException {
 
+        DSLContext dsl = dslProvider.get();
 
-        Record1<Integer> count = dslProvider.get().selectCount()
+        Record1<Integer> count = dsl.selectCount()
                 .from(MYCHAT_USER)
                 .where(MYCHAT_USER.IDENTIFICATION_TYPE.eq(MyChatUserIdentificationTypeEnum.EMAIL.name()))
                 .and(MYCHAT_USER.IDENTIFICATION.eq(req.email))
@@ -61,8 +62,8 @@ public class RegisterServices {
         String salt = DigestUtils.toHex(DigestUtils.randomizeNumber());
         String passwd = DigestUtils.hashPassword(req.password, salt);
 
-        Result<MychatUserRecord> record =
-            dslProvider.get().insertInto(MYCHAT_USER,
+        MychatUserRecord mychatUserRecord =
+            dsl.insertInto(MYCHAT_USER,
                 MYCHAT_USER.IDENTIFICATION_TYPE,
                 MYCHAT_USER.IDENTIFICATION,
                 MYCHAT_USER.CREATION_DATE,
@@ -79,13 +80,24 @@ public class RegisterServices {
                     salt,
                     MyChatUserStatusEnum.PENDING.name())
             .returning()
-            .fetch();
+            .fetchOne();
 
 
-        if (record.isNotEmpty()) {
+        if (mychatUserRecord != null) {
 
-            Result<ProfileRecord> profileRecord =
-                    dslProvider.get().insertInto(PROFILE,
+            ActivationRecord activationRecord =
+                dsl.insertInto(Tables.ACTIVATION)
+                    .columns(Tables.ACTIVATION.TYPE, Tables.ACTIVATION.TYPE_ID,
+                            Tables.ACTIVATION.ACTIVATION_TOKEN, Tables.ACTIVATION.STATUS,
+                            Tables.ACTIVATION.CREATION_DATE)
+                    .values(ActivationTypeEnum.MYCHAT_USER.name(), mychatUserRecord.getMychatUserId(),
+                            DigestUtils.randomizedId(), ActivationStatusEnum.PENDING.name(),
+                            new Timestamp(System.currentTimeMillis()))
+                    .returning()
+                    .fetchOne();
+
+            ProfileRecord profileRecord =
+                    dsl.insertInto(PROFILE,
                             PROFILE.WHATSUP,
                             PROFILE.CREATION_DATE,
                             PROFILE.FULLNAME,
@@ -95,32 +107,35 @@ public class RegisterServices {
                             new Timestamp(System.currentTimeMillis()),
                             req.fullname,
                             req.gender.name()
-                    ).returning().fetch();
+                    ).returning().fetchOne();
 
 
 
-            Result<ChannelRecord> channelRecord =
-                dslProvider.get().insertInto(CHANNEL,
+            ChannelRecord channelRecord =
+                dsl.insertInto(CHANNEL,
                     CHANNEL.CREATION_DATE,
                     CHANNEL.MYCHAT_USER_ID,
                     CHANNEL.TYPE,
                     CHANNEL.TYPE_ID)
                     .values(
                             new Timestamp(System.currentTimeMillis()),
-                            record.get(0).getMychatUserId(),
+                            mychatUserRecord.getMychatUserId(),
                             ChannelTypeEnum.MYCHAT.name(),
-                            String.valueOf(record.get(0).getMychatUserId()))
+                            String.valueOf(mychatUserRecord.getMychatUserId()))
                     .returning()
-                    .fetch();
+                    .fetchOne();
 
-            if (channelRecord.isNotEmpty() && profileRecord.isNotEmpty()) {
-                return Register.Res.success(record.get(0), channelRecord.get(0));
+            if (channelRecord != null && profileRecord != null && activationRecord != null) {
+                return Register.Res.success(mychatUserRecord, channelRecord);
             } else {
-                if (channelRecord.isEmpty()) {
-                    LOG.log(Level.SEVERE, format("no record inserted into CHANNEL table for MYCHAT_USER_ID %s", record.get(0).getMychatUserId()));
+                if (channelRecord == null) {
+                    LOG.log(Level.SEVERE, format("no record inserted into CHANNEL table for MYCHAT_USER_ID %s", mychatUserRecord.getMychatUserId()));
                 }
-                if (profileRecord.isEmpty()) {
-                    LOG.log(Level.SEVERE, format("no record inserted into PROFILE table for MYCHAT_USER_ID %s", record.get(0).getMychatUserId()));
+                if (profileRecord == null) {
+                    LOG.log(Level.SEVERE, format("no record inserted into PROFILE table for MYCHAT_USER_ID %s", mychatUserRecord.getMychatUserId()));
+                }
+                if (activationRecord == null) {
+                    LOG.log(Level.SEVERE, format("no record inserted into ACTIVATION table for MYCHAT_USER_ID %s", mychatUserRecord.getMychatUserId()));
                 }
             }
         } else {

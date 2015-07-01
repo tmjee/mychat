@@ -3,7 +3,7 @@ package com.tmjee.mychat.server.rest;
 import com.google.inject.Injector;
 import com.tmjee.mychat.server.MyChatFunction;
 import com.tmjee.mychat.server.MyChatGuiceServletContextListener;
-import com.tmjee.mychat.server.domain.RolesEnum;
+import com.tmjee.mychat.common.domain.RolesEnum;
 import com.tmjee.mychat.server.exception.RoleAccessDeniedException;
 
 import javax.ws.rs.Path;

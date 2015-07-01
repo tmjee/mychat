@@ -8,7 +8,7 @@ import com.tmjee.jooq.generated.tables.Profile;
 import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
 import com.tmjee.jooq.generated.tables.records.ChatMessageRecord;
 import com.tmjee.jooq.generated.tables.records.ChatRecord;
-import com.tmjee.mychat.server.domain.ChatMemberStatusEnum;
+import com.tmjee.mychat.common.domain.ChatMemberStatusEnum;
 import com.tmjee.mychat.server.rest.*;
 import com.tmjee.mychat.server.service.annotations.AccessTokenAnnotation;
 import com.tmjee.mychat.server.service.annotations.ApplicationTokenAnnotation;

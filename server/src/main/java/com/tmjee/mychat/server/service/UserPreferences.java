@@ -1,6 +1,6 @@
 package com.tmjee.mychat.server.service;
 
-import com.tmjee.mychat.server.domain.RolesEnum;
+import com.tmjee.mychat.common.domain.RolesEnum;
 
 import java.util.EnumSet;
 

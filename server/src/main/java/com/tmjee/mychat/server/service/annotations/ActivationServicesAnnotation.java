@@ -1,6 +1,6 @@
 package com.tmjee.mychat.server.service.annotations;
 
-import com.tmjee.mychat.common.domain.RolesEnum;
+import com.google.inject.BindingAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 /**
  * @author tmjee
  */
+@BindingAnnotation
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
-public @interface RolesAnnotation {
-    RolesEnum[] value();
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+public @interface ActivationServicesAnnotation {
 }

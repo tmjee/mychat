@@ -6,6 +6,7 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
 import com.google.inject.servlet.ServletScopes;
+import com.tmjee.mychat.server.jooq.generated.tables.Activation;
 import com.tmjee.mychat.server.service.*;
 import com.tmjee.mychat.server.service.annotations.*;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -111,6 +112,10 @@ public class MyChatServletModule extends ServletModule {
         bind(ProfileServices.class)
                 .annotatedWith(ProfileServicesAnnotation.class)
                 .to(ProfileServices.class)
+                .in(Singleton.class);
+        bind(ActivationServices.class)
+                .annotatedWith(ActivationServicesAnnotation.class)
+                .to(ActivationServices.class)
                 .in(Singleton.class);
 
 

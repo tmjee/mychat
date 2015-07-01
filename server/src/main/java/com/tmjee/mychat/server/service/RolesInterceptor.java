@@ -3,7 +3,7 @@ package com.tmjee.mychat.server.service;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import com.tmjee.mychat.server.domain.RolesEnum;
+import com.tmjee.mychat.common.domain.RolesEnum;
 import com.tmjee.mychat.server.rest.V1;
 import com.tmjee.mychat.server.service.annotations.RolesAnnotation;
 import com.tmjee.mychat.server.service.annotations.UserPreferencesAnnotation;
