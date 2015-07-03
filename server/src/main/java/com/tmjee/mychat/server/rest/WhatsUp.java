@@ -2,14 +2,25 @@ package com.tmjee.mychat.server.rest;
 
 import com.tmjee.mychat.server.service.PersonalServices;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
 /**
  * @author tmjee
  */
+@Provider
 public class WhatsUp extends V1<WhatsUp.Req, WhatsUp.Res> {
 
 
+    @POST
+    @Path("/whatsup")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response whatsUp(Req req) {
         return action(req, this::f);
     }

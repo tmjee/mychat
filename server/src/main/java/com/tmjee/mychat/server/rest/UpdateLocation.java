@@ -2,6 +2,11 @@ package com.tmjee.mychat.server.rest;
 
 import com.tmjee.mychat.server.service.LocationServices;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -9,8 +14,12 @@ import javax.ws.rs.ext.Provider;
  * @author tmjee
  */
 @Provider
-public class Location extends V1<Location.Req, Location.Res> {
+public class UpdateLocation extends V1<UpdateLocation.Req, UpdateLocation.Res> {
 
+    @POST
+    @Path("/location")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response location(Req req) {
         return action(req, this::f);
     }

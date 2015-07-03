@@ -17,6 +17,7 @@ Response #1:
 ------------
 {
     "messages":["Logon success"],
+    "myChatUserId":1,
     "valid":true,
     "accessToken":"2df4a970-7329-4e5f-ba68-2f40a8e60ae7"
 }
@@ -41,6 +42,14 @@ http://localhost:8080/v1/activation/{activationToken}
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
 }
 
+Response #1:
+------------
+{
+    "messages":["Successfully activated 5134aab4-9e78-412b-b097-7d91c39b58e5@gmail.com"],
+    "valid":true
+}
+
+
 
 =================================================================================================
     Register
@@ -59,6 +68,13 @@ http://localhost:8080/v1/register
 
 Response #1:
 ------------
+{
+    "messages":["MyChat user 100 added successfully"],
+    "valid":true,
+    "myChatUserId":100,
+    "activationToken":"b02717c0-b752-4dd9-a9c3-c1e8f89b2d62"
+}
+
 
 =================================================================================================
     List contacts

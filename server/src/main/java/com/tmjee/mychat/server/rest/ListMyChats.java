@@ -1,16 +1,13 @@
 package com.tmjee.mychat.server.rest;
 
-import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
-import com.tmjee.jooq.generated.tables.records.ChatRecord;
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.jooq.generated.tables.records.ProfileRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChatMemberRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChatRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ProfileRecord;
 import com.tmjee.mychat.server.service.ChatServices;
 import org.jooq.Record;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -20,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 
 /**
  * @author tmjee
@@ -33,7 +30,9 @@ public class ListMyChats extends V1<ListMyChats.Req, ListMyChats.Res> {
     @Path("/mychats/{myChatUserId}/list")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listChats(Req req) {
+    public Response listChats(Req req,
+                              @PathParam("myChatUserId") Integer myChatUserId) {
+        req.myChatUserId = myChatUserId;
         return action(req, this::f);
     }
 

@@ -6,6 +6,8 @@ import com.squareup.okhttp.*;
 import com.tmjee.mychat.common.domain.GenderEnum;
 
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +21,7 @@ import static java.lang.String.format;
 /**
  * @author tmjee
  */
-public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
+public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, MySelfAware {
 
     private static final Logger LOG = Logger.getLogger(MyChatClient.class.getName());
 
@@ -30,12 +32,18 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
     private OkHttpClient okHttpClient;
 
     private String accessToken;
+    private Integer myChatUserId;
+
+    private MySelf myself;
 
     @Inject
     public MyChatClient(MyChatClientBuilder.Configuration configuration) {
         this.configuration = configuration;
         objectMapper = new ObjectMapper();
         okHttpClient = new OkHttpClient();
+        CookieManager cookieManager = new CookieManager();
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+        okHttpClient.setCookieHandler(cookieManager);
     }
 
 
@@ -46,11 +54,15 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
                 .pathed("/logon")
                 .withJsonResource("logon_1.json")
                 .bindVariables("email", email)
-                .bindVariables("passwprd", password)
+                .bindVariables("password", password)
                 .bindVariables("applicationToken", configuration.applicationToken)
                 .build()
                 .executeWith(this)
                 .mapped();
+        if ((Boolean) mappedResponse.get("valid")) {
+            accessToken = (String) mappedResponse.get("accessToken");
+            myChatUserId = (Integer) mappedResponse.get("myChatUserId");
+        }
         return mappedResponse;
     }
 
@@ -72,6 +84,34 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
     }
 
 
+    @RequiresApplicationTokenAnnotation
+    public Map<String, Object> activate(String activationToken) throws IOException, URISyntaxException {
+        Map<String, Object> mappedResponse = new Command()
+                .pathed(format("/activation/%s", activationToken))
+                .withJsonResource("activate_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .build()
+                .executeWith(this)
+                .mapped();
+        return mappedResponse;
+    }
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> listContacts(String myChatUserId, int limit, int offset) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/contacts/{myChatUserId}/list", myChatUserId))
+                .withJsonResource("listContacts_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("limit", limit)
+                .bindVariables("offset", offset)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+
 
 
 
@@ -83,6 +123,7 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
         }
         return r;
     }
+
 
 
     /**
@@ -116,6 +157,11 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
 
         JsonResourceCommand bindVariables(String var, String val) {
             vars.put(var, val);
+            return this;
+        }
+
+        JsonResourceCommand bindVariables(String var, int val) {
+            vars.put(var, String.valueOf(val));
             return this;
         }
 
@@ -192,6 +238,8 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
 
 
 
+    // ===== Aware Interfaces implementations =========================================================
+
 
     @Override
     public String getAccessToken() {
@@ -202,4 +250,28 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware {
     public String getApplicationToken() {
         return configuration.applicationToken;
     }
+
+
+    @Override
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public MySelf getMySelf() throws IOException, URISyntaxException {
+        if (myself == null) {
+
+            Map<String, Object> mapped = new Command()
+                    .pathed(format("/profile/%s", myChatUserId))
+                    .withJsonResource("profile_1.json")
+                    .bindVariables("applicationToken", getApplicationToken())
+                    .bindVariables("accessToken", accessToken)
+                    .build()
+                    .executeWith(this)
+                    .mapped();
+            String myChatUserId = (String) mapped.get("myChatUserId");
+            //mapped.get("")
+
+        }
+        return null;
+    }
+
+
 }

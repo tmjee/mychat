@@ -19,7 +19,6 @@ public class LogonTest {
     public void testGoodLogon() throws Exception {
         LOGGER.info("test good logon");
         Map<String, Object> m = MYCHAT_CLIENT.logon("toby@gmail.com", "test");
-        m = MYCHAT_CLIENT.logon("toby@gmail.com", "xxxx");
     }
 
     @Test
@@ -34,17 +33,4 @@ public class LogonTest {
         Map<String, Object> m = MYCHAT_CLIENT.logon("xxx@gmail.com", "xxx");
     }
 
-/*    public static void main(String[] args) throws Exception {
-
-        MyChatClient c = new MyChatClientBuilder()
-                .withApplicationToken("75b92637-2750-4eb9-8da2-7df486fbfb23")
-                .withHostConnectionUrl("http://localhost:8080/v1")
-                .build();
-
-        Map<String, Object> m = c.logon("toby@gmail.com", "test");
-
-        String uuid = UUID.randomUUID().toString();
-
-        m = c.register(uuid+"@gmail.com", "test", uuid, GenderEnum.FEMALE);
-    }*/
 }

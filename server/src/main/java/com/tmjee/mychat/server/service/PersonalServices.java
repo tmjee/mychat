@@ -13,7 +13,7 @@ import javax.inject.Provider;
 
 import java.sql.Timestamp;
 
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 
 /**
  * @author tmjee

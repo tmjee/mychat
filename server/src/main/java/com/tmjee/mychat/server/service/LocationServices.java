@@ -2,12 +2,12 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.tmjee.mychat.server.rest.Location;
+import com.tmjee.mychat.server.rest.UpdateLocation;
 import com.tmjee.mychat.server.service.annotations.DSLContextAnnotation;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 
 /**
  * @author tmjee
@@ -22,7 +22,7 @@ public class LocationServices {
     }
 
 
-    public Location.Res contributeLocation(Location.Req req) {
+    public UpdateLocation.Res contributeLocation(UpdateLocation.Req req) {
         DSLContext dsl = dslProvider.get();
         Record1<Integer> count =
             dsl.selectCount()
@@ -43,6 +43,6 @@ public class LocationServices {
                    .returning()
                    .fetchOne();
         }
-        return Location.Res.success();
+        return UpdateLocation.Res.success();
     }
 }

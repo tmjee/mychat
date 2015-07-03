@@ -1,16 +1,13 @@
 package com.tmjee.mychat.server.rest;
 
-import com.tmjee.jooq.generated.Tables;
-import com.tmjee.jooq.generated.tables.records.AvatarRecord;
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.jooq.generated.tables.records.ProfileRecord;
+import com.tmjee.mychat.server.jooq.generated.Tables;
+import com.tmjee.mychat.server.jooq.generated.tables.records.AvatarRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ProfileRecord;
 import com.tmjee.mychat.server.service.ProfileServices;
 import org.jooq.Record;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -27,7 +24,9 @@ public class Profile extends V1<Profile.Req, Profile.Res> {
     @Path("/profile/{myChatUserId}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response contactDetails(Req req) {
+    public Response contactDetails(Req req,
+                                   @PathParam("myChatUserId") Integer myChatUserId) {
+        req.myChatUserId = myChatUserId;
         return action(req, this::f);
     }
 

@@ -1,12 +1,10 @@
 package com.tmjee.mychat.server.rest;
 
-import com.tmjee.mychat.server.jooq.generated.tables.records.ActivationRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ProfileRecord;
 import com.tmjee.mychat.server.service.ActivationServices;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -24,7 +22,9 @@ public class CompleteActivation extends V1<CompleteActivation.Req, CompleteActiv
     @Path("/activation/{activationToken}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response completeActivation(Req req) {
+    public Response completeActivation(Req req,
+                                       @PathParam("activationToken") String activationToken) {
+        req.activationToken = activationToken;
         return action(req, this::f);
     }
 
@@ -36,7 +36,6 @@ public class CompleteActivation extends V1<CompleteActivation.Req, CompleteActiv
 
 
     public static class Req extends V1.Req {
-
         public String activationToken;
 
         @Override
@@ -46,18 +45,15 @@ public class CompleteActivation extends V1<CompleteActivation.Req, CompleteActiv
     }
 
     public static class Res extends V1.Res {
-
-        public static Res success(ActivationRecord activationRecord) {
+        public static Res success(MychatUserRecord mychatUserRecord) {
             Res res = new Res();
-            res.addMessage(format("Successfully activated %s %s", activationRecord.getType(),
-                    activationRecord.getTypeId()));
+            res.addMessage(format("Successfully activated %s", mychatUserRecord.getIdentification()));
             return res;
         }
 
-        public static Res failed(ActivationRecord activationRecord) {
+        public static Res failed(MychatUserRecord mychatUserRecord) {
             Res res = new Res();
-            res.addMessage(format("Failed to activate %s %s with status %s", activationRecord.getType(),
-                    activationRecord.getTypeId(), activationRecord.getStatus()));
+            res.addMessage(format("Failed to activate %s ", mychatUserRecord.getIdentification()));
             return res;
         }
     }

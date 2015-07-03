@@ -1,12 +1,13 @@
 package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 import static java.lang.String.format;
 
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.tables.records.ApplicationTokenRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ApplicationTokenRecord;
 import com.tmjee.mychat.server.exception.InvalidApplicationTokenException;
+import com.tmjee.mychat.server.rest.V1;
 import com.tmjee.mychat.server.service.annotations.DSLContextAnnotation;
 import com.tmjee.mychat.server.service.annotations.UserPreferencesAnnotation;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -14,6 +15,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.jooq.DSLContext;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,17 +46,24 @@ public class ApplicationTokenInterceptor implements MethodInterceptor {
         ApplicationTokenRecord applicationRecord = null;
         String applicationToken = null;
         try {
-            Field f = invocation.getMethod().getParameters()[0].getType().getField("applicationToken");
-            System.out.println("***** applicationToken field="+f);
+
             Object argument0 = invocation.getArguments()[0];
-            System.out.println("***** argument0="+argument0);
+            Field f = argument0.getClass().getField("applicationToken");
+            f.setAccessible(true);
+
+            V1.Req rq = V1.Req.class.cast(argument0);
+            System.out.println(rq);
+            System.out.println(rq.applicationToken);
+            System.out.println("*** f=" + f);
+            System.out.println(f.get(argument0));
+
 
             applicationToken = f.get(argument0).toString();
             String _applicationToken = applicationToken;
             LOG.log(Level.FINEST, ()->format("applicationToken read %s", _applicationToken));
 
         } catch(Exception e) {
-            throw new InvalidApplicationTokenException(format("no field in parameters to identify application token"));
+            throw new InvalidApplicationTokenException(format("no field in parameters to identify application token"), e);
         }
         applicationRecord =
                 dslProvider.get().selectFrom(APPLICATION_TOKEN)

@@ -2,10 +2,7 @@ package com.tmjee.mychat.server.rest;
 
 import com.tmjee.mychat.server.service.ContactServices;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -22,7 +19,9 @@ public class AcceptContacts extends V1<AcceptContacts.Req, AcceptContacts.Res> {
     @Path("/contacts/{myChatUserId}/accept")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response acceptContacts(Req req) {
+    public Response acceptContacts(Req req,
+                                   @PathParam("myChatUserId") Integer myChatUserId) {
+        req.myChatUserId = myChatUserId;
         return action(req, this::f);
     }
 

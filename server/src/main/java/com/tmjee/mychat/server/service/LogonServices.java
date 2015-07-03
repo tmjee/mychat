@@ -2,9 +2,9 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.tables.records.AccessTokenRecord;
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.jooq.generated.tables.records.RoleRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.AccessTokenRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.RoleRecord;
 import com.tmjee.mychat.common.domain.MyChatUserIdentificationTypeEnum;
 import com.tmjee.mychat.common.domain.AccessTokenStateEnum;
 import com.tmjee.mychat.common.domain.RolesEnum;
@@ -14,21 +14,31 @@ import com.tmjee.mychat.server.service.annotations.DSLContextAnnotation;
 import com.tmjee.mychat.server.service.annotations.TransactionAnnotation;
 import com.tmjee.mychat.server.service.annotations.UserPreferencesAnnotation;
 import com.tmjee.mychat.server.utils.DigestUtils;
+import org.glassfish.hk2.api.PerLookup;
+import org.glassfish.jersey.process.internal.RequestScoped;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 
-import static com.tmjee.jooq.generated.Tables.*;
+import javax.inject.Singleton;
+import javax.ws.rs.BeanParam;
+
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
+import static java.lang.String.format;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author tmjee
  */
 public class LogonServices {
+
+    private static final Logger LOG = Logger.getLogger(LogonServices.class.getName());
 
     private final Provider<DSLContext> dslContextProvider;
     private final Provider<UserPreferences> userPreferencesProvider;
@@ -43,7 +53,7 @@ public class LogonServices {
 
     @TransactionAnnotation
     @ApplicationTokenAnnotation
-    public Logon.Res logon(Logon.Req req) throws NoSuchAlgorithmException {
+    public Logon.Res logon(@BeanParam Logon.Req req) throws NoSuchAlgorithmException {
         DSLContext context = dslContextProvider.get();
         Result<MychatUserRecord> result =
             context.selectFrom(MYCHAT_USER)
@@ -86,6 +96,9 @@ public class LogonServices {
                             .execute();
                 }
                 userPreferencesProvider.get().setAccessToken(accessToken);
+
+                LOG.log(Level.INFO, format("Access Token in Provider %s UserPreference %s set to %s", userPreferencesProvider, userPreferencesProvider.get(), userPreferencesProvider.get().getAccessToken()));
+
 
                 // handle roles
                 Result<RoleRecord> roleRecordsResult = context.selectFrom(ROLE).where(ROLE.MYCHAT_USER_ID.eq(myChatUserId)).fetch();

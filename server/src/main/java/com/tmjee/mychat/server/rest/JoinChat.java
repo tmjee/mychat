@@ -1,12 +1,9 @@
 package com.tmjee.mychat.server.rest;
 
-import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChatMemberRecord;
 import com.tmjee.mychat.server.service.ChatServices;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -24,7 +21,9 @@ public class JoinChat extends V1<JoinChat.Req, JoinChat.Res> {
     @Path("/chats/{chatId}/join")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response joinChat(JoinChat.Req req) {
+    public Response joinChat(JoinChat.Req req,
+                             @PathParam("chatId") Integer chatId) {
+        req.chatId = chatId;
        return action(req, this::f);
     }
 

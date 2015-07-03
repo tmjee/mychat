@@ -13,14 +13,20 @@ import static com.tmjee.mychat.client.Static.*;
 /**
  * @author tmjee
  */
-public class RegisterTest {
+public class ActivationTest {
 
-    private static final Logger LOG = Logger.getLogger(RegisterTest.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ActivationTest.class.getName());
 
     @Test
-    public void testGoodRegister() throws Exception {
-        LOG.log(Level.INFO, "test good register");
+    public void testActivate() throws Exception {
+        LOGGER.log(Level.INFO, "testActivate");
         String uuid = UUID.randomUUID().toString();
         Map<String, Object> m = MYCHAT_CLIENT.register(uuid+"@gmail.com", "test", uuid, GenderEnum.FEMALE);
+
+        String activationToken = (String) m.get("activationToken");
+
+        LOGGER.log(Level.INFO, "activate registration "+m.get("myChatUserId"));
+
+        m = MYCHAT_CLIENT.activate(activationToken);
     }
 }

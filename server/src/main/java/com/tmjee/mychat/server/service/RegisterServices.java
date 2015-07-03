@@ -2,12 +2,11 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.tables.records.ChannelRecord;
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.jooq.generated.tables.records.ProfileRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChannelRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ProfileRecord;
 import com.tmjee.mychat.common.domain.*;
-import com.tmjee.mychat.server.jooq.generated.Tables;
-import com.tmjee.mychat.server.jooq.generated.tables.records.ActivationRecord;
+
 import com.tmjee.mychat.server.rest.Register;
 import com.tmjee.mychat.server.service.annotations.ApplicationTokenAnnotation;
 import com.tmjee.mychat.server.service.annotations.DSLContextAnnotation;
@@ -15,14 +14,13 @@ import com.tmjee.mychat.server.service.annotations.TransactionAnnotation;
 import com.tmjee.mychat.server.utils.DigestUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
-import org.jooq.Result;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 import static java.lang.String.format;
 
 /**
@@ -70,7 +68,8 @@ public class RegisterServices {
                 MYCHAT_USER.MODIFICATION_DATE,
                 MYCHAT_USER.PASSWORD,
                 MYCHAT_USER.SALT,
-                MYCHAT_USER.STATUS)
+                MYCHAT_USER.STATUS,
+                MYCHAT_USER.ACTIVATION_TOKEN)
             .values(
                     MyChatUserIdentificationTypeEnum.EMAIL.name(),
                     req.email,
@@ -78,24 +77,13 @@ public class RegisterServices {
                     new Timestamp(System.currentTimeMillis()),
                     passwd,
                     salt,
-                    MyChatUserStatusEnum.PENDING.name())
+                    MyChatUserStatusEnum.PENDING.name(),
+                    DigestUtils.randomizedId())
             .returning()
             .fetchOne();
 
 
         if (mychatUserRecord != null) {
-
-            ActivationRecord activationRecord =
-                dsl.insertInto(Tables.ACTIVATION)
-                    .columns(Tables.ACTIVATION.TYPE, Tables.ACTIVATION.TYPE_ID,
-                            Tables.ACTIVATION.ACTIVATION_TOKEN, Tables.ACTIVATION.STATUS,
-                            Tables.ACTIVATION.CREATION_DATE)
-                    .values(ActivationTypeEnum.MYCHAT_USER.name(), mychatUserRecord.getMychatUserId(),
-                            DigestUtils.randomizedId(), ActivationStatusEnum.PENDING.name(),
-                            new Timestamp(System.currentTimeMillis()))
-                    .returning()
-                    .fetchOne();
-
             ProfileRecord profileRecord =
                     dsl.insertInto(PROFILE,
                             PROFILE.WHATSUP,
@@ -125,7 +113,7 @@ public class RegisterServices {
                     .returning()
                     .fetchOne();
 
-            if (channelRecord != null && profileRecord != null && activationRecord != null) {
+            if (channelRecord != null && profileRecord != null) {
                 return Register.Res.success(mychatUserRecord, channelRecord);
             } else {
                 if (channelRecord == null) {
@@ -133,9 +121,6 @@ public class RegisterServices {
                 }
                 if (profileRecord == null) {
                     LOG.log(Level.SEVERE, format("no record inserted into PROFILE table for MYCHAT_USER_ID %s", mychatUserRecord.getMychatUserId()));
-                }
-                if (activationRecord == null) {
-                    LOG.log(Level.SEVERE, format("no record inserted into ACTIVATION table for MYCHAT_USER_ID %s", mychatUserRecord.getMychatUserId()));
                 }
             }
         } else {

@@ -7,6 +7,7 @@ import com.tmjee.mychat.common.domain.RolesEnum;
 import com.tmjee.mychat.server.exception.RoleAccessDeniedException;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
