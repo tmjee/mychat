@@ -16,7 +16,7 @@ public class ProfileTest {
     public void testProfile() throws IOException, URISyntaxException {
 
         MYCHAT_CLIENT.logon("toby@gmail.com", "test");
-        MYCHAT_CLIENT.getMySelf();
+        MySelfAware.MySelf myself = MYCHAT_CLIENT.getMySelf();
 
 
     }

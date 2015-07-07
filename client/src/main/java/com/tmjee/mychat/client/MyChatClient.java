@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.squareup.okhttp.*;
 import com.tmjee.mychat.common.domain.GenderEnum;
+import com.tmjee.mychat.common.domain.MyChatUserIdentificationTypeEnum;
+import com.tmjee.mychat.common.domain.MyChatUserStatusEnum;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -11,6 +13,7 @@ import java.net.CookiePolicy;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -266,9 +269,25 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
                     .build()
                     .executeWith(this)
                     .mapped();
-            String myChatUserId = (String) mapped.get("myChatUserId");
-            //mapped.get("")
 
+            Map<String, Object> mapped2 = new Command()
+                    .pathed(format(""))
+
+
+            Integer myChatUserId = (Integer) mapped.get("myChatUserId");
+            String name = (String) mapped.get("name");
+            GenderEnum genderEnum = GenderEnum.valueOf((String) mapped.get("gender"));
+            Timestamp dateCreated = (Timestamp) mapped.get("dateCreated");
+            String whatsup = (String) mapped.get("whatsup");
+            MyChatUserStatusEnum statusEnum = MyChatUserStatusEnum.valueOf((String) mapped.get("status"));
+            String identification = (String) mapped.get("identification");
+            MyChatUserIdentificationTypeEnum =
+
+
+            MyChatUserIdentificationTypeEnum identificationType = MyChatUserIdentificationTypeEnum.valueOf(mapped.get())
+
+            myself = new MySelf(myChatUserId, identificationTypeEnum, identification,
+                    statusEnum, dateCreated, whatsup, genderEnum, name);
         }
         return null;
     }

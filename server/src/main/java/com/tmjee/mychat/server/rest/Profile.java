@@ -55,6 +55,10 @@ public class Profile extends V1<Profile.Req, Profile.Res> {
         public String gender;
         public Timestamp dateCreated;
         public String whatsup;
+        public String status;
+        public String identification;
+        public String identificationType;
+
 
         public static Res success(Record r) {
             AvatarRecord avatarRecord = r.into(Tables.AVATAR);
@@ -68,6 +72,10 @@ public class Profile extends V1<Profile.Req, Profile.Res> {
             res.dateCreated = mychatUserRecord.getCreationDate();
             res.gender = profileRecord.getGender();
             res.whatsup = profileRecord.getWhatsup();
+
+            res.status = mychatUserRecord.getStatus();
+            res.identification = mychatUserRecord.getIdentification();
+            res.identificationType = mychatUserRecord.getIdentificationType();
 
             return res;
         }

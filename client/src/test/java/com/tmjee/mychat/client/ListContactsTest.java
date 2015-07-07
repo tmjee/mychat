@@ -13,6 +13,7 @@ public class ListContactsTest {
     public void testListContacts() throws Exception {
         MYCHAT_CLIENT.logon("toby@gmail.com", "test");
 
+        MYCHAT_CLIENT.listContacts(MYCHAT_CLIENT.getMySelf().getMyChatUserId(), 10, 0);
 
     }
 }
