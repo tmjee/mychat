@@ -1,14 +1,15 @@
 package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 import static java.lang.String.format;
 
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.tables.MychatUser;
-import com.tmjee.jooq.generated.tables.records.ContactRecord;
-import com.tmjee.mychat.server.domain.ContactStatusEnum;
-import com.tmjee.mychat.server.domain.MyChatUserStatusEnum;
+import com.tmjee.mychat.server.jooq.generated.tables.MychatUser;
+import com.tmjee.mychat.server.jooq.generated.tables.Profile;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ContactRecord;
+import com.tmjee.mychat.common.domain.ContactStatusEnum;
+import com.tmjee.mychat.common.domain.MyChatUserStatusEnum;
 import com.tmjee.mychat.server.rest.AcceptContacts;
 import com.tmjee.mychat.server.rest.AddContacts;
 import com.tmjee.mychat.server.rest.ListContacts;
@@ -79,7 +80,7 @@ public class ContactServices {
                     .fetchOne();
 
             MychatUser myChatUser = MYCHAT_USER.as("m");
-            com.tmjee.jooq.generated.tables.Profile profile = PROFILE.as("p");
+            Profile profile = PROFILE.as("p");
             Record contactMyChatUser = dsl
                     .select(profile.fields())
                     .from(myChatUser)
@@ -92,7 +93,7 @@ public class ContactServices {
         }
 
         MychatUser myChatUser = MYCHAT_USER.as("m");
-        com.tmjee.jooq.generated.tables.Profile profile = PROFILE.as("p");
+        Profile profile = PROFILE.as("p");
         Record contactMyChatUser = dsl
                 .select(profile.fields())
                 .from(myChatUser)

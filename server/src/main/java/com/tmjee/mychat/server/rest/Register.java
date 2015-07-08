@@ -1,8 +1,8 @@
 package com.tmjee.mychat.server.rest;
 
-import com.tmjee.jooq.generated.tables.records.ChannelRecord;
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
-import com.tmjee.mychat.server.domain.GenderEnum;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChannelRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.common.domain.GenderEnum;
 import com.tmjee.mychat.server.service.RegisterServices;
 
 import javax.ws.rs.Consumes;
@@ -31,7 +31,6 @@ public class Register extends V1<Register.Req, Register.Res> {
     }
 
     public Res g(Req req) throws NoSuchAlgorithmException {
-        System.out.println("****** "+req.gender);
         RegisterServices registerServices = getInstance(RegisterServices.class);
         return registerServices.register(req);
     }
@@ -53,22 +52,26 @@ public class Register extends V1<Register.Req, Register.Res> {
     public static class Res extends V1.Res {
 
         public Integer myChatUserId;
+        public String activationToken;
 
         public static Res success(MychatUserRecord r, ChannelRecord re) {
             Res res = new Res();
             res.addMessage(format("MyChat user %s added successfully", r.getMychatUserId()));
             res.myChatUserId = r.getMychatUserId();
+            res.activationToken = r.getActivationToken();
             return res;
         }
 
         public static Res alreadyExists(Req req) {
             Res res = new Res();
+            res.valid = false;
             res.addMessage(format("email %s is already registered", req.email));
             return res;
         }
 
         public static Res failed(Req req) {
             Res res = new Res();
+            res.valid = false;
             res.addMessage(format("Failed to add MyChat user %s", req.email));
             return res;
         }

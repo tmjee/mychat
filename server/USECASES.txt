@@ -1,3 +1,4 @@
+@author tmjee
 
 =================================================================================================
     Logon
@@ -12,8 +13,41 @@ http://localhost:8080/v1/logon
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
 }
 
-Response:
----------
+Response #1:
+------------
+{
+    "messages":["Logon success"],
+    "myChatUserId":1,
+    "valid":true,
+    "accessToken":"2df4a970-7329-4e5f-ba68-2f40a8e60ae7"
+}
+
+Respoonse #2:
+-------------
+{
+    "messages":["Bad password/username combinations"],
+    "valid":false,
+    "accessToken":null
+}
+
+
+=================================================================================================
+    Complete Activation
+=================================================================================================
+Request
+-------
+POST
+http://localhost:8080/v1/activation/{activationToken}
+{
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
+}
+
+Response #1:
+------------
+{
+    "messages":["Successfully activated 5134aab4-9e78-412b-b097-7d91c39b58e5@gmail.com"],
+    "valid":true
+}
 
 
 
@@ -32,6 +66,16 @@ http://localhost:8080/v1/register
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
 }
 
+Response #1:
+------------
+{
+    "messages":["MyChat user 100 added successfully"],
+    "valid":true,
+    "myChatUserId":100,
+    "activationToken":"b02717c0-b752-4dd9-a9c3-c1e8f89b2d62"
+}
+
+
 =================================================================================================
     List contacts
 =================================================================================================
@@ -42,8 +86,24 @@ http://localhost:8080/v1/contacts/{myChatUserId}/list
 {
     "offset":"10",
     "limit":"20",
-    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
-    "accessToken":"...."
+    "applicationtoken":"d5b87197-495c-47ca-959d-332921004a52"
+    "accesstoken":"...."
+}
+
+Response #1:
+------------
+{
+    "messages":["Contacts retrieved successfully"],
+    "valid":true,
+    "contacts":[
+        {"name":"Jack","myChatUserId":"2"},
+        {"name":"Noah","myChatUserId":"3"},
+        {"name":"Evan","myChatUserId":"4"},
+        {"name":"Biz","myChatUserId":"5"}
+    ],
+    "total":4,
+    "limit":10,
+    "offset":0
 }
 
 
@@ -113,6 +173,24 @@ http://localhost:8080/v1/profile/{myChatUserId}
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
+
+Response #1
+-----------
+{
+    "messages":["Profile succesfully retrieved"],
+    "valid":true,
+    "myChatUserId":1,
+    "name":"Toby",
+    "gender":"MALE",
+    "dateCreated":1436355981508,
+    "whatsup":"This is Toby",
+    "status":"ACTIVE",
+    "identification":"toby@gmail.com",
+    "identificationType":"EMAIL"
+}
+
+
+
 
 =================================================================================================
     Create Chat

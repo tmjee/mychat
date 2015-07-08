@@ -1,6 +1,6 @@
 package com.tmjee.mychat.server.service.annotations;
 
-import com.tmjee.mychat.server.domain.RolesEnum;
+import com.tmjee.mychat.common.domain.RolesEnum;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

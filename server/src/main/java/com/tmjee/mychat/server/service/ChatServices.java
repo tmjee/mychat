@@ -2,13 +2,13 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.tables.ChatMember;
-import com.tmjee.jooq.generated.tables.MychatUser;
-import com.tmjee.jooq.generated.tables.Profile;
-import com.tmjee.jooq.generated.tables.records.ChatMemberRecord;
-import com.tmjee.jooq.generated.tables.records.ChatMessageRecord;
-import com.tmjee.jooq.generated.tables.records.ChatRecord;
-import com.tmjee.mychat.server.domain.ChatMemberStatusEnum;
+import com.tmjee.mychat.server.jooq.generated.tables.ChatMember;
+import com.tmjee.mychat.server.jooq.generated.tables.MychatUser;
+import com.tmjee.mychat.server.jooq.generated.tables.Profile;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChatMemberRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChatMessageRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.ChatRecord;
+import com.tmjee.mychat.common.domain.ChatMemberStatusEnum;
 import com.tmjee.mychat.server.rest.*;
 import com.tmjee.mychat.server.service.annotations.AccessTokenAnnotation;
 import com.tmjee.mychat.server.service.annotations.ApplicationTokenAnnotation;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.tmjee.jooq.generated.Tables.*;
+import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 
 /**
  * @author tmjee

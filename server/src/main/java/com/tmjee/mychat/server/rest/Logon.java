@@ -1,12 +1,16 @@
 package com.tmjee.mychat.server.rest;
 
-import com.tmjee.jooq.generated.tables.records.MychatUserRecord;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MychatUserRecord;
 import com.tmjee.mychat.server.service.LogonServices;
+import org.glassfish.jersey.process.internal.RequestScoped;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 
 /**
@@ -15,20 +19,18 @@ import java.security.NoSuchAlgorithmException;
 @Provider
 public class Logon extends V1<Logon.Req, Logon.Res> {
 
+
     @POST
     @Path("/logon")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response logon(Req r) throws NoSuchAlgorithmException {
-
-        System.out.println("****** r.email="+r.email);
-        System.out.println("****** r.password="+r.password);
-
-        return action(r,
-                this::f);
+        System.out.println("xxxx "+r.applicationToken);
+        return action(r, this::f);
     }
 
     private Res f(Req req) throws NoSuchAlgorithmException {
+        System.out.println("xxxxy "+req.applicationToken);
         LogonServices logonServices = getInstance(LogonServices.class);
         return logonServices.logon(req);
     }
@@ -46,10 +48,12 @@ public class Logon extends V1<Logon.Req, Logon.Res> {
 
     public static final class Res extends V1.Res {
 
+        public Integer myChatUserId;
         public String accessToken;
 
         public static Res success(String accessToken, MychatUserRecord myChatUserRecord) {
             Res res = new Res();
+            res.myChatUserId = myChatUserRecord.getMychatUserId();
             res.accessToken = accessToken;
             res.addMessage("Logon success");
             return res;

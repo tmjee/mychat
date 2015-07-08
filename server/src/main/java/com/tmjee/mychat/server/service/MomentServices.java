@@ -2,8 +2,8 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.Tables;
-import com.tmjee.jooq.generated.tables.records.MomentRecord;
+import com.tmjee.mychat.server.jooq.generated.Tables;
+import com.tmjee.mychat.server.jooq.generated.tables.records.MomentRecord;
 import com.tmjee.mychat.server.rest.ListMoments;
 import com.tmjee.mychat.server.rest.PostMoment;
 import com.tmjee.mychat.server.service.annotations.AccessTokenAnnotation;

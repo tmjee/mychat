@@ -3,6 +3,7 @@ package com.tmjee.mychat.server.utils;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -30,6 +31,10 @@ public class DigestUtils {
     public static long randomizeNumber() {
         double d = ThreadLocalRandom.current().nextDouble();
         return (start + ((long)(diff * d)));
+    }
+
+    public static String randomizedId() {
+        return UUID.randomUUID().toString();
     }
 
 

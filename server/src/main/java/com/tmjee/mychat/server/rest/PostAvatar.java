@@ -4,10 +4,7 @@ import com.tmjee.mychat.server.service.ProfileServices;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
@@ -25,7 +22,9 @@ public class PostAvatar extends V1<PostAvatar.Req, PostAvatar.Res> {
     @Path("/avatar/{myChatUserId}/post")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postAvatar(Req req) {
+    public Response postAvatar(Req req,
+                               @PathParam("myChatUserId") Integer myChatUserId) {
+        req.myChatUserId = myChatUserId;
        return action(req, this::f);
     }
 

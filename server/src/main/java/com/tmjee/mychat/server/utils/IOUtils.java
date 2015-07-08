@@ -1,6 +1,5 @@
 package com.tmjee.mychat.server.utils;
 
-import sun.misc.BASE64Encoder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -3,11 +3,13 @@ package com.tmjee.mychat.server.rest;
 import com.google.inject.Injector;
 import com.tmjee.mychat.server.MyChatFunction;
 import com.tmjee.mychat.server.MyChatGuiceServletContextListener;
-import com.tmjee.mychat.server.domain.RolesEnum;
+import com.tmjee.mychat.common.domain.RolesEnum;
 import com.tmjee.mychat.server.exception.RoleAccessDeniedException;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 /**
  * @author tmjee
  */
+@Provider
 @Path("/v1")
 public class V1<REQ extends V1.Req, RES extends V1.Res> {
 

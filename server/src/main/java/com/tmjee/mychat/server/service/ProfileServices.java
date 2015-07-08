@@ -2,8 +2,8 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.tmjee.jooq.generated.Tables;
-import com.tmjee.jooq.generated.tables.records.AvatarRecord;
+import com.tmjee.mychat.server.jooq.generated.Tables;
+import com.tmjee.mychat.server.jooq.generated.tables.records.AvatarRecord;
 import com.tmjee.mychat.server.rest.GetAvatar;
 import com.tmjee.mychat.server.rest.PostAvatar;
 import com.tmjee.mychat.server.rest.Profile;

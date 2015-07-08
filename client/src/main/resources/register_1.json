@@ -1,0 +1,8 @@
+{
+  "email":"${email}",
+  "password":"${password}",
+  "fullname":"${fullname}",
+  "gender":"${gender}",
+  "applicationToken":"${applicationToken}"
+}
+

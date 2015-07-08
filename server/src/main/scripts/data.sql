@@ -17,23 +17,32 @@ VALUES
 
 INSERT INTO MYCHAT_USER
   (MYCHAT_USER_ID, IDENTIFICATION_TYPE, IDENTIFICATION, PASSWORD, SALT,
-   STATUS, CREATION_DATE, MODIFICATION_DATE)
+   STATUS, CREATION_DATE, MODIFICATION_DATE, ACTIVATION_TOKEN)
 VALUES
   ('1', 'EMAIL', 'toby@gmail.com',
    'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
-   '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+   '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'asdinhasd23'),
   ('2', 'EMAIL', 'jack@gmail.com',
    'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
-   '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+   '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '2ejhsadfjksd2'),
   ('3', 'EMAIL', 'noah@gmail.com',
   'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
-  '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'asdjhk3riwsfnlksd'),
   ('4', 'EMAIL', 'evan@gmail.com',
   'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
-  '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'jklsdvi903edfv'),
   ('5', 'EMAIL', 'biz@gmail.com',
   'ffffff90ffffffa752ffffffd9ffffffd1ffffff982f16ffffffe18ffffffc276fffffff1ffffffa835c6dffffffa8ffffff9b1effffff9e657433bffffffacffffffcf31ffffffb9497f7b',
-  '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+  '2206ad2f', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'jknrf9qe2nbd')
+;
+
+INSERT INTO CONTACT
+  (MYCHAT_USER_ID, CONTACT_MYCHAT_USER_ID, STATUS, CREATION_DATE)
+VALUES
+  (1, 2, 'PENDING_CONFIRMATION', CURRENT_TIMESTAMP),
+  (1, 3, 'PENDING_ACCEPTANCE', CURRENT_TIMESTAMP),
+  (1, 4, 'ACCEPTED', CURRENT_TIMESTAMP),
+  (1, 5, 'ACCEPTED', CURRENT_TIMESTAMP)
 ;
 
 

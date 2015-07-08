@@ -1,0 +1,5 @@
+{
+  "avatar":"${avatar}",
+  "applicationToken":"${applicationToken}",
+  "accessToken":"${accessToken}"
+}
