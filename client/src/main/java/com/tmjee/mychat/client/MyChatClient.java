@@ -7,6 +7,7 @@ import com.tmjee.mychat.common.domain.GenderEnum;
 import com.tmjee.mychat.common.domain.MyChatUserIdentificationTypeEnum;
 import com.tmjee.mychat.common.domain.MyChatUserStatusEnum;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -117,19 +118,16 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
     @RequiresApplicationTokenAnnotation
     @RequiresAccessTokenAnnotation
-    public Map<String, Object> postAvatar(Integer myChatUserId, byte[] bytes) throws IOException, URISyntaxException {
+    public Map<String, Object> postAvatar(Integer myChatUserId, String mimeType, byte[] bytes) throws IOException, URISyntaxException {
         return new Command()
                 .pathed(format("/avatar/%s/post", myChatUserId))
                 .withJsonResource("post_avatar_1.json")
                 .bindVariables("applicationToken", getApplicationToken())
                 .bindVariables("accessToken", getApplicationToken())
-                .bindVariables("avatar", bytes)
+                .bindVariables("avatar", mimeType, bytes)
                 .build()
                 .executeWith(this)
                 .mapped();
-
-
-
     }
 
 
@@ -138,10 +136,10 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
 
 
-    public static String readResourceAsString(String jsonFileResource, Map<String, String> variables) throws URISyntaxException, IOException {
+    public static String readResourceAsString(String jsonFileResource, Map<String, Object> variables) throws URISyntaxException, IOException {
         String r = new String(Files.readAllBytes(Paths.get(Thread.currentThread().getContextClassLoader().getResource(jsonFileResource).toURI())));
-        for(Map.Entry<String, String> e : variables.entrySet()) {
-            r = r.replace("${"+e.getKey()+"}", e.getValue());
+        for(Map.Entry<String, Object> e : variables.entrySet()) {
+            r = r.replace("${"+e.getKey()+"}", e.getValue().toString());
         }
         return r;
     }
@@ -169,7 +167,7 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
     static class JsonResourceCommand {
         final String path;
         final String jsonResource;
-        final Map<String, String> vars;
+        final Map<String, Object> vars;
 
         JsonResourceCommand(String path, String jsonResource) {
             this.path = path;
@@ -187,8 +185,12 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
             return this;
         }
 
-        JsonResourceCommand bindVariables(String var, byte[] bytes) {
+        JsonResourceCommand bindVariables(String var, String mimeType, byte[] bytes) {
+            return bindVariables(var, Part.newPart(mimeType, bytes));
+        }
 
+        JsonResourceCommand bindVariables(String var, Part part) {
+            vars.put(var, part);
             return this;
         }
 
@@ -204,9 +206,9 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
     static class ExecuteCommand {
         final String path;
         final String jsonResource;
-        final Map<String, String> vars;
+        final Map<String, Object> vars;
 
-        ExecuteCommand(String path, String jsonResource, Map<String, String> vars) {
+        ExecuteCommand(String path, String jsonResource, Map<String, Object> vars) {
             this.path = path;
             this.jsonResource = jsonResource;
             this.vars = vars;
@@ -224,13 +226,32 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
             return new ResponseCommand(c, path, resp);
         }
 
-        ResponseCommand executeAsMultipartWith(MyChatClient c) {
-            RequestBody b = new MultipartBuilder()
-                    .type(MultipartBuilder.FORM)
-                    .addPart(
-                            Headers.of("Content-Disposition",  "form-data; name=\"avatar\""),
-                            RequestBody.create(MediaType.parse("image/png"), "")
-                    )
+        ResponseCommand executeAsMultipartWith(MyChatClient c) throws IOException {
+            MultipartBuilder builder = new MultipartBuilder()
+                    .type(MultipartBuilder.FORM);
+            for(Map.Entry<String, Object>  entry : vars.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (value instanceof Part) {
+                    Part part = (Part)value;
+                    builder.addPart(
+                            Headers.of("Content-Disposition", "form-data; name=\""+key+"\""),
+                            RequestBody.create(MediaType.parse(part.getMediaType()), part.getBytes())
+                    );
+                } else {
+                    builder.addPart(
+                            Headers.of("Content-Disposition", "form-data; name=\""+key+"\""),
+                            RequestBody.create(MediaType.parse("text/plain"), value.toString())
+                    );
+                }
+            }
+            RequestBody b = builder.build();
+            Request req = new Request.Builder()
+                    .url(c.configuration.hostConnectionUrl+path)
+                    .post(b)
+                    .build();
+            Response resp = c.okHttpClient.newCall(req).execute();
+            return new ResponseCommand(c, path, resp);
         }
     }
 
@@ -264,10 +285,22 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
 
 
+    public static class Part {
+        private final String mediaType;
+        private final byte[] b;
 
+        private Part(String mediaType, byte[] b) {
+            this.mediaType = mediaType;
+            this.b = b;
+        }
 
+        public static Part newPart(String mediaType, byte[] b) {
+            return new Part(mediaType, b);
+        }
 
-
+        public String getMediaType() { return mediaType; }
+        public byte[] getBytes() { return b; }
+    }
 
 
 
