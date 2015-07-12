@@ -1,5 +1,6 @@
 package com.tmjee.mychat.server.rest;
 
+import com.tmjee.mychat.server.MyChatImageServlet;
 import com.tmjee.mychat.server.jooq.generated.tables.records.AvatarRecord;
 import com.tmjee.mychat.server.service.ProfileServices;
 
@@ -43,15 +44,14 @@ public class GetAvatar extends V1<GetAvatar.Req, GetAvatar.Res> {
 
     public static class Res extends V1.Res {
 
-        public byte[] b;
-        public byte[] e;
         public String filename;
         public String mimeType;
+        public String URL;
 
         public static Res success(AvatarRecord avatarRecord) {
             Res res = new Res();
-            res.b = avatarRecord.getBytes();
-            res.e = avatarRecord.getEncoded();
+            res.addMessage("Successfully get Avatar");
+            res.URL = MyChatImageServlet.AVATAR_URI_PREFIX+avatarRecord.getAvatarId();
             res.filename = avatarRecord.getFilename();
             res.mimeType = avatarRecord.getMimeType();
             return res;

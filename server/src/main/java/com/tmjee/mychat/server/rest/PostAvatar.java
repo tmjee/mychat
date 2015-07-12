@@ -1,8 +1,10 @@
 package com.tmjee.mychat.server.rest;
 
 import com.tmjee.mychat.server.service.ProfileServices;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -22,10 +24,19 @@ public class PostAvatar extends V1<PostAvatar.Req, PostAvatar.Res> {
     @Path("/avatar/{myChatUserId}/post")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postAvatar(Req req,
-                               @PathParam("myChatUserId") Integer myChatUserId) {
+    public Response postAvatar(@PathParam("myChatUserId") Integer myChatUserId,
+                               @FormDataParam("applicationToken") String applicationToken,
+                               @FormDataParam("accessToken") String accessToken,
+                               @FormDataParam("avatar") InputStream is,
+                               @FormDataParam("avatar") FormDataBodyPart b) {
+        Req req = new Req();
+        req.applicationToken = applicationToken;
+        req.accessToken = accessToken;
         req.myChatUserId = myChatUserId;
-       return action(req, this::f);
+        req.is = is;
+        req.b = b;
+
+        return action(req, this::f);
     }
 
     private Res f(Req req) throws IOException {
@@ -37,11 +48,9 @@ public class PostAvatar extends V1<PostAvatar.Req, PostAvatar.Res> {
 
         public Integer myChatUserId;
 
-        @FormDataParam("avatar")
         public InputStream is;
 
-        @FormDataParam("avatar")
-        public FormDataContentDisposition d;
+        public FormDataBodyPart b;
 
         @Override
         protected void validate() {

@@ -3,6 +3,7 @@ package com.tmjee.mychat.server.service;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.tmjee.mychat.server.exception.InvalidAccessTokenException;
+import com.tmjee.mychat.server.rest.V1;
 import com.tmjee.mychat.server.service.annotations.UserPreferencesAnnotation;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -30,13 +31,15 @@ public class AccessTokenInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         try {
-            Field f = invocation.getMethod().getParameterTypes()[0].getField("accessToken");
-            Object o = invocation.getArguments()[0];
-            String accessToken = f.get(o).toString();
-
-            LOG.log(Level.FINEST, ()->format("accessToken read %s", accessToken));
+            Object argument0 = invocation.getArguments()[0];
+            Field f = argument0.getClass().getField("accessToken");
+            f.setAccessible(true);
 
 
+            //V1.Req rq = V1.Req.class.cast(argument0);
+            String accessToken = f.get(argument0).toString();
+
+            LOG.log(Level.INFO, ()->format("accessToken read %s", accessToken));
 
             LOG.log(Level.INFO, format("Provider %s User preference %s, access token from user preference %s",
                     userPreferencesProvider, userPreferencesProvider.get(), userPreferencesProvider.get().getAccessToken()));

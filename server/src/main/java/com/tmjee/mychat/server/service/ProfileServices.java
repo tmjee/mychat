@@ -86,14 +86,20 @@ public class ProfileServices {
                             new Timestamp(System.currentTimeMillis()),
                             baos.toByteArray(),
                             Base64.getMimeEncoder().encode(baos.toByteArray()),
-                            req.d.getType(),
-                            req.d.getFileName()
+                            req.b.getMediaType().toString(),
+                            req.b.getFormDataContentDisposition().getFileName() == null ?
+                                    req.b.getFormDataContentDisposition().getName() :
+                                    req.b.getFormDataContentDisposition().getFileName()
                     ).returning().fetchOne();
         } else { // update
             dsl.update(Tables.AVATAR)
                     .set(Tables.AVATAR.BYTES, baos.toByteArray())
                     .set(Tables.AVATAR.MODIFICATION_DATE, new Timestamp(System.currentTimeMillis()))
-                    .set(Tables.AVATAR.FILENAME, req.d.getFileName())
+                    .set(Tables.AVATAR.MIME_TYPE, req.b.getMediaType().toString())
+                    .set(Tables.AVATAR.FILENAME,
+                            req.b.getFormDataContentDisposition().getFileName() == null ?
+                                req.b.getFormDataContentDisposition().getName() :
+                                req.b.getFormDataContentDisposition().getFileName())
                     .set(Tables.AVATAR.ENCODED, Base64.getMimeEncoder().encode(baos.toByteArray()))
                     .where(Tables.AVATAR.MYCHAT_USER_ID.eq(req.myChatUserId))
                     .returning()
@@ -107,7 +113,6 @@ public class ProfileServices {
 
     @TransactionAnnotation
     @ApplicationTokenAnnotation
-    @AccessTokenAnnotation
     public GetAvatar.Res getAvatar(GetAvatar.Req req) {
         DSLContext dsl = dslProvider.get();
 

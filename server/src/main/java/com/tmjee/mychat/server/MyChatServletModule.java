@@ -18,6 +18,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.String.format;
+
 /**
  * @author tmjee
  */
@@ -25,19 +27,24 @@ public class MyChatServletModule extends ServletModule {
 
     private static final Logger LOG = Logger.getLogger(MyChatServletModule.class.getName());
 
+    private static final String CONFIG_PROPERTIES_FILE = "/config.properties";
+
     @Override
     protected void configureServlets() {
 
         // bind properties
         try {
             Properties prop = new Properties();
-            prop.load(getClass().getResourceAsStream("/config.properties"));
+            prop.load(getClass().getResourceAsStream(CONFIG_PROPERTIES_FILE));
 
-            System.out.println(getClass().getResourceAsStream("/config.properties"));
-            prop.forEach((k,v)->
+            LOG.log(Level.INFO, format("Loaded properties file %s", CONFIG_PROPERTIES_FILE));
+
+            prop.forEach((k, v) -> {
+                    LOG.log(Level.FINEST, format("mapped property named %s with content %s to @Named(\"%s\")", k, v, k));
                     bindConstant()
-                        .annotatedWith(Names.named((k.toString())))
-                        .to(v.toString()));
+                            .annotatedWith(Names.named((k.toString())))
+                            .to(v.toString());
+                    });
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "unable to locate config.properties");
         }
@@ -178,7 +185,7 @@ public class MyChatServletModule extends ServletModule {
 
         // servlets
         bind(MyChatImageServlet.class).in(Singleton.class);
-        serve("/mychat/images/*").with(MyChatImageServlet.class);
+        serve(MyChatImageServlet.MYCHAT_IMAGES_PREFIX+"*").with(MyChatImageServlet.class);
 
     }
 }

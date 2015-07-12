@@ -30,10 +30,6 @@ public class ActivationServices {
                 .where(Tables.MYCHAT_USER.ACTIVATION_TOKEN.eq(req.activationToken))
                 .fetchOne();
 
-        System.out.println("*** "+req.activationToken);
-        System.out.println("***** "+mychatUserRecord);
-        System.out.println("***** "+mychatUserRecord.getStatus());
-
         if (mychatUserRecord.getStatus().equals(MyChatUserStatusEnum.PENDING.name())) {
             mychatUserRecord =
                 dsl.update(Tables.MYCHAT_USER)

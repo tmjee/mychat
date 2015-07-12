@@ -23,14 +23,6 @@ public class DigestUtilsTest {
         String passwd2 = DigestUtils.hashPassword("test", hexOfRandomizednumber);
         String passwd3 = DigestUtils.hashPassword("test", anotherHexOfRandomizednumber);
 
-        System.out.println(format("randomizedNumber=%s", randomizedNumber));
-        System.out.println(format("anotherRandomizedNumber=%s", anotherRandomizedNumber));
-        System.out.println(format("hexOfRandomziedNumber=%s", hexOfRandomizednumber));
-        System.out.println(format("anotherHexOfRandomziedNumber=%s", anotherHexOfRandomizednumber));
-        System.out.println(format("passwd1=%s", passwd1));
-        System.out.println(format("passwd2=%s", passwd2));
-        System.out.println(format("passwd3=%s", passwd3));
-
         assertNotEquals(randomizedNumber, anotherRandomizedNumber);
         assertNotEquals(hexOfRandomizednumber, anotherHexOfRandomizednumber);
         assertEquals(passwd1, passwd2);

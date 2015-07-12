@@ -51,7 +51,6 @@ public class AddContacts extends V1<AddContacts.Req, AddContacts.Res> {
     public static class Res extends V1.Res {
 
         public static Res success(Record contactMyChatUserProfile) {
-            System.out.println("******8 fullname="+contactMyChatUserProfile.getValue(PROFILE.FULLNAME));
             Res res = new Res();
             res.addMessage(format("Contact added for %s, waiting acceptance",
                     contactMyChatUserProfile.getValue(PROFILE.FULLNAME)));

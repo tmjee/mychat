@@ -51,12 +51,7 @@ public class ApplicationTokenInterceptor implements MethodInterceptor {
             Field f = argument0.getClass().getField("applicationToken");
             f.setAccessible(true);
 
-            V1.Req rq = V1.Req.class.cast(argument0);
-            System.out.println(rq);
-            System.out.println(rq.applicationToken);
-            System.out.println("*** f=" + f);
-            System.out.println(f.get(argument0));
-
+            //V1.Req rq = V1.Req.class.cast(argument0);
 
             applicationToken = f.get(argument0).toString();
             String _applicationToken = applicationToken;

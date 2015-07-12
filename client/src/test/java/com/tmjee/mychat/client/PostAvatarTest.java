@@ -24,6 +24,7 @@ public class PostAvatarTest {
         Map<String, Object> m = MYCHAT_CLIENT.logon("toby@gmail.com", "test");
 
         Path p = Paths.get(getClass().getResource("/avatar_1.jpg").toURI());
-        m = MYCHAT_CLIENT.postAvatar(MYCHAT_CLIENT.getMySelf().getMyChatUserId(), "image/jpg", Files.readAllBytes(p));
+        m = MYCHAT_CLIENT.postAvatar(MYCHAT_CLIENT.getMySelf().getMyChatUserId(),
+                p.getFileName().toString(), "image/jpg", Files.readAllBytes(p));
     }
 }

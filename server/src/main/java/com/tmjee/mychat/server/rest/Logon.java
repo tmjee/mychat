@@ -25,12 +25,10 @@ public class Logon extends V1<Logon.Req, Logon.Res> {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response logon(Req r) throws NoSuchAlgorithmException {
-        System.out.println("xxxx "+r.applicationToken);
         return action(r, this::f);
     }
 
     private Res f(Req req) throws NoSuchAlgorithmException {
-        System.out.println("xxxxy "+req.applicationToken);
         LogonServices logonServices = getInstance(LogonServices.class);
         return logonServices.logon(req);
     }

@@ -6,6 +6,7 @@ import com.squareup.okhttp.*;
 import com.tmjee.mychat.common.domain.GenderEnum;
 import com.tmjee.mychat.common.domain.MyChatUserIdentificationTypeEnum;
 import com.tmjee.mychat.common.domain.MyChatUserStatusEnum;
+import okio.Buffer;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,13 +119,53 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
     @RequiresApplicationTokenAnnotation
     @RequiresAccessTokenAnnotation
-    public Map<String, Object> postAvatar(Integer myChatUserId, String mimeType, byte[] bytes) throws IOException, URISyntaxException {
+    public Map<String, Object> postAvatar(Integer myChatUserId, String fileName, String mimeType, byte[] bytes) throws IOException, URISyntaxException {
         return new Command()
                 .pathed(format("/avatar/%s/post", myChatUserId))
                 .withJsonResource("post_avatar_1.json")
                 .bindVariables("applicationToken", getApplicationToken())
-                .bindVariables("accessToken", getApplicationToken())
-                .bindVariables("avatar", mimeType, bytes)
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("avatar", fileName, mimeType, bytes)
+                .build()
+                .executeAsMultipartWith(this)
+                .mapped();
+    }
+
+
+
+    @RequiresApplicationTokenAnnotation
+    public Map<String, Object> getAvatar(Integer myChatUserId) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/avatar/%s/get", myChatUserId))
+                .withJsonResource("get_avatar_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> addContact(Integer contactMyChatUserId) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/contacts/%s/add", contactMyChatUserId))
+                .withJsonResource("add_contacts_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> acceptContact(Integer contactMyChatUserId) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/contacts/%s/accept", contactMyChatUserId))
+                .withJsonResource("accept_contacts_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
                 .build()
                 .executeWith(this)
                 .mapped();
@@ -185,8 +226,8 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
             return this;
         }
 
-        JsonResourceCommand bindVariables(String var, String mimeType, byte[] bytes) {
-            return bindVariables(var, Part.newPart(mimeType, bytes));
+        JsonResourceCommand bindVariables(String var, String fileName, String mimeType, byte[] bytes) {
+            return bindVariables(var, Part.newPart(fileName, mimeType, bytes));
         }
 
         JsonResourceCommand bindVariables(String var, Part part) {
@@ -235,13 +276,13 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
                 if (value instanceof Part) {
                     Part part = (Part)value;
                     builder.addPart(
-                            Headers.of("Content-Disposition", "form-data; name=\""+key+"\""),
+                            Headers.of("Content-Disposition", format("form-data; name=\"%s\"; filename=\"%s\"", key, part.getFileName())),
                             RequestBody.create(MediaType.parse(part.getMediaType()), part.getBytes())
                     );
                 } else {
                     builder.addPart(
-                            Headers.of("Content-Disposition", "form-data; name=\""+key+"\""),
-                            RequestBody.create(MediaType.parse("text/plain"), value.toString())
+                            Headers.of("Content-Disposition", format("form-data; name=\"%s\"", key)),
+                            RequestBody.create(null, value.toString())
                     );
                 }
             }
@@ -250,6 +291,11 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
                     .url(c.configuration.hostConnectionUrl+path)
                     .post(b)
                     .build();
+            if (LOG.isLoggable(Level.INFO)) {
+                Buffer buffer = new Buffer();
+                b.writeTo(buffer);
+                LOG.log(Level.INFO, format("request for %s - %n%s", path, buffer.readUtf8()));
+            }
             Response resp = c.okHttpClient.newCall(req).execute();
             return new ResponseCommand(c, path, resp);
         }
@@ -286,20 +332,23 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
 
     public static class Part {
+        private final String fileName;
         private final String mediaType;
         private final byte[] b;
 
-        private Part(String mediaType, byte[] b) {
+        private Part(String fileName, String mediaType, byte[] b) {
+            this.fileName = fileName;
             this.mediaType = mediaType;
             this.b = b;
         }
 
-        public static Part newPart(String mediaType, byte[] b) {
-            return new Part(mediaType, b);
+        public static Part newPart(String fileName, String mediaType, byte[] b) {
+            return new Part(fileName, mediaType, b);
         }
 
         public String getMediaType() { return mediaType; }
         public byte[] getBytes() { return b; }
+        public String getFileName() { return fileName; }
     }
 
 
