@@ -511,6 +511,20 @@ http://localhost:8080/v1/moments/{myChatUserId}/list
     "accessToken":"...."
 }
 
+Response #1:
+------------
+{
+    "messages":["Moment retrieved successfully"],
+    "valid":true,
+    "total":3,
+    "moments":[
+        {"image":"/mychat/images/moment/100","myChatUserId":"1","momentId":"100","message":"this is my moment 1436791363547","creationDate":"2015-07-13 22:42:43.606"},
+        {"image":"/mychat/images/moment/101","myChatUserId":"1","momentId":"101","message":"this is my moment 1436792091911","creationDate":"2015-07-13 22:54:51.983"},
+        {"image":"/mychat/images/moment/102","myChatUserId":"1","momentId":"102","message":"this is my moment with image 1436792092005","creationDate":"2015-07-13 22:54:52.046"}
+    ]
+}
+
+
 
 =================================================================================================
     Post Moment
@@ -525,6 +539,10 @@ http://localhost:8080/v1/moments/{myChatUserId}/post
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
+
+Response #1:
+------------
+{"messages":["Moment posted"],"valid":true}
 
 
 

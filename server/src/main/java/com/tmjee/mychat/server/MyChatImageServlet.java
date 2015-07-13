@@ -64,15 +64,13 @@ public class MyChatImageServlet extends HttpServlet {
                             .where(Tables.MOMENT.MOMENT_ID.eq(_momentId))
                             .fetchOne();
 
-                    if (momentRecord == null) {
+                    if (momentRecord != null) {
                         byte[] b = momentId.getBytes();
 
                         resp.setContentType(momentRecord.getMimeType());
                         resp.setContentLength(b.length);
                         resp.setDateHeader("Modified-Since",
-                                momentRecord.getModificationDate() == null ?
-                                        momentRecord.getCreationDate().getTime() :
-                                        momentRecord.getModificationDate().getTime());
+                                momentRecord.getCreationDate().getTime());
                         resp.getOutputStream().write(b);
                         resp.flushBuffer();
                         return;

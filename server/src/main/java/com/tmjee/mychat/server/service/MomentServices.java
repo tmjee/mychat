@@ -43,7 +43,9 @@ public class MomentServices {
         String fileName = null;
         String mimeType = "text/plain";
         MomentTypeEnum momentType = MomentTypeEnum.TEXT;
-        if (req.is != null) {
+
+
+        if (req.is != null && req.b != null) {
             b = IOUtils.toBytes(req.is);
             eb = IOUtils.base64Encoded(b);
             fileName = req.b.getContentDisposition().getFileName() == null ?
@@ -102,8 +104,9 @@ public class MomentServices {
                 .leftOuterJoin(Tables.MYCHAT_USER).on(Tables.MYCHAT_USER.MYCHAT_USER_ID.eq(Tables.MOMENT.MYCHAT_USER_ID))
                 .leftOuterJoin(Tables.PROFILE).on(Tables.PROFILE.MYCHAT_USER_ID.eq(Tables.MOMENT.MYCHAT_USER_ID))
                 .where(Tables.MOMENT.MYCHAT_USER_ID.eq(req.myChatUserId))
+                .limit(req.limit)
+                .offset(req.offset)
                 .fetch();
-
 
         return ListMoments.Res.success(r);
     }

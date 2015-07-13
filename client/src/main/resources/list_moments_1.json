@@ -1,5 +1,6 @@
 {
-  "avatar":"${avatar}",
+  "offset":"${offset}",
+  "limit":"${limit}",
   "applicationToken":"${applicationToken}",
   "accessToken":"${accessToken}"
 }

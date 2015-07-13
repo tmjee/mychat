@@ -24,8 +24,8 @@ public class PostMoment extends V1<PostMoment.Req, PostMoment.Res> {
     @Path("/moments/{myChatUserId}/post")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postMoment(@FormDataParam("media") InputStream is,
-                               @FormDataParam("media") FormDataBodyPart b,
+    public Response postMoment(@DefaultValue("null") @FormDataParam("media") InputStream is,
+                               @DefaultValue("null") @FormDataParam("media") FormDataBodyPart b,
                                @FormDataParam("message") String message,
                                @FormDataParam("applicationToken") String applicationToken,
                                @FormDataParam("accessToken") String accessToken,

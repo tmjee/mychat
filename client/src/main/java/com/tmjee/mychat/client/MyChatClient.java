@@ -123,12 +123,12 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
     public Map<String, Object> postAvatar(Integer myChatUserId, String fileName, String mimeType, byte[] bytes) throws IOException, URISyntaxException {
         return new Command()
                 .pathed(format("/avatar/%s/post", myChatUserId))
-                .withJsonResource("post_avatar_1.json")
+                .withMultipart()
                 .bindVariables("applicationToken", getApplicationToken())
                 .bindVariables("accessToken", getAccessToken())
                 .bindVariables("avatar", fileName, mimeType, bytes)
                 .build()
-                .executeAsMultipartWith(this)
+                .executeWith(this)
                 .mapped();
     }
 
@@ -301,6 +301,41 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
     }
 
 
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> postMoment(Integer myChatUserId, String message, String fileName,
+                                          String mimeType, byte[] b) throws IOException {
+        MultipartFormCommand c = new Command()
+                .pathed(format("/moments/%s/post", myChatUserId))
+                .withMultipart()
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("message", message);
+
+        if (fileName != null && mimeType != null && b != null) {
+            c = c.bindVariables("media", fileName, mimeType, b);
+        }
+
+        return c.build()
+                .executeWith(this)
+                .mapped();
+    }
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> listMoments(Integer myChatUserId, Integer offset, Integer limit)
+                                            throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/moments/%s/list", myChatUserId))
+                .withJsonResource("list_moments_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("limit", limit)
+                .bindVariables("offset", offset)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
 
 
     private void cleanup() {
@@ -333,38 +368,41 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
         JsonResourceCommand withJsonResource(String jsonResource) {
             return new JsonResourceCommand(path, jsonResource);
         }
+        MultipartFormCommand withMultipart() {
+            return new MultipartFormCommand(path);
+        }
     }
+
 
     /**
      * @author tmjee
+     * @param <T>
+     * @param <U>
      */
-    static class JsonResourceCommand {
-        final String path;
-        final String jsonResource;
+    static abstract class BindingCommand<T, U> {
+
         final Map<String, Object> vars;
 
-        JsonResourceCommand(String path, String jsonResource) {
-            this.path = path;
-            this.jsonResource = jsonResource;
+        BindingCommand() {
             this.vars = new HashMap<>(10);
         }
 
-        JsonResourceCommand bindVariables(String var, String val) {
+        T bindVariables(String var, String val) {
             vars.put(var, val);
-            return this;
+            return (T) this;
         }
 
-        JsonResourceCommand bindVariables(String var, int val) {
+        T bindVariables(String var, int val) {
             vars.put(var, String.valueOf(val));
-            return this;
+            return (T) this;
         }
 
-        JsonResourceCommand bindVariables(String var, float val) {
+        T bindVariables(String var, float val) {
             vars.put(var, String.valueOf(val));
-            return this;
+            return (T) this;
         }
 
-        JsonResourceCommand bindVariables(String var, List<?> vals) {
+        T bindVariables(String var, List<?> vals) {
             StringBuilder b = new StringBuilder();
             b.append("[");
             int length = vals.size()-1;
@@ -376,18 +414,25 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
             }
             b.append("]");
             vars.put(var, b.toString());
-            return this;
+            return (T) this;
         }
 
-        JsonResourceCommand bindVariables(String var, String fileName, String mimeType, byte[] bytes) {
-            return bindVariables(var, Part.newPart(fileName, mimeType, bytes));
+        abstract U build();
+    }
+
+    /**
+     * @author tmjee
+     */
+    static class JsonResourceCommand extends BindingCommand<JsonResourceCommand, ExecuteCommand> {
+        final String path;
+        final String jsonResource;
+
+        JsonResourceCommand(String path, String jsonResource) {
+            this.path = path;
+            this.jsonResource = jsonResource;
         }
 
-        JsonResourceCommand bindVariables(String var, Part part) {
-            vars.put(var, part);
-            return this;
-        }
-
+        @Override
         ExecuteCommand build() {
             return new ExecuteCommand(path, jsonResource, vars);
         }
@@ -397,30 +442,44 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
     /**
      * @author tmjee
      */
-    static class ExecuteCommand {
+    static class MultipartFormCommand extends BindingCommand<MultipartFormCommand, MultipartExecuteCommand> {
+
         final String path;
-        final String jsonResource;
+
+        MultipartFormCommand(String path) {
+            this.path = path;
+        }
+
+        MultipartFormCommand bindVariables(String var, String fileName, String mimeType, byte[] bytes) {
+            return bindVariables(var, Part.newPart(fileName, mimeType, bytes));
+        }
+
+        MultipartFormCommand bindVariables(String var, Part part) {
+            vars.put(var, part);
+            return this;
+        }
+
+        @Override
+        MultipartExecuteCommand build() {
+            return new MultipartExecuteCommand(path, vars);
+        }
+    }
+
+
+    /**
+     * @author tmjee
+     */
+    static class MultipartExecuteCommand {
+
+        final String path;
         final Map<String, Object> vars;
 
-        ExecuteCommand(String path, String jsonResource, Map<String, Object> vars) {
+        MultipartExecuteCommand(String path, Map<String, Object> vars) {
             this.path = path;
-            this.jsonResource = jsonResource;
             this.vars = vars;
         }
 
-        ResponseCommand executeWith(MyChatClient c) throws IOException, URISyntaxException {
-            String json = MyChatClient.readResourceAsString(jsonResource, vars);
-            LOG.log(Level.INFO, format("request for %s - %n%s", path, json));
-            RequestBody b = RequestBody.create(c.JSON_MEDIA_TYPE, json);
-            Request req = new Request.Builder()
-                    .url(c.configuration.hostConnectionUrl+path)
-                    .post(b)
-                    .build();
-            Response resp = c.okHttpClient.newCall(req).execute();
-            return new ResponseCommand(c, path, resp);
-        }
-
-        ResponseCommand executeAsMultipartWith(MyChatClient c) throws IOException {
+        ResponseCommand executeWith(MyChatClient c) throws IOException {
             MultipartBuilder builder = new MultipartBuilder()
                     .type(MultipartBuilder.FORM);
             for(Map.Entry<String, Object>  entry : vars.entrySet()) {
@@ -452,6 +511,35 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
             Response resp = c.okHttpClient.newCall(req).execute();
             return new ResponseCommand(c, path, resp);
         }
+    }
+
+
+    /**
+     * @author tmjee
+     */
+    static class ExecuteCommand {
+        final String path;
+        final String jsonResource;
+        final Map<String, Object> vars;
+
+        ExecuteCommand(String path, String jsonResource, Map<String, Object> vars) {
+            this.path = path;
+            this.jsonResource = jsonResource;
+            this.vars = vars;
+        }
+
+        ResponseCommand executeWith(MyChatClient c) throws IOException, URISyntaxException {
+            String json = MyChatClient.readResourceAsString(jsonResource, vars);
+            LOG.log(Level.INFO, format("request for %s - %n%s", path, json));
+            RequestBody b = RequestBody.create(c.JSON_MEDIA_TYPE, json);
+            Request req = new Request.Builder()
+                    .url(c.configuration.hostConnectionUrl+path)
+                    .post(b)
+                    .build();
+            Response resp = c.okHttpClient.newCall(req).execute();
+            return new ResponseCommand(c, path, resp);
+        }
+
     }
 
 

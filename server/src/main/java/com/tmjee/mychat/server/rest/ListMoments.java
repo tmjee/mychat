@@ -29,6 +29,7 @@ public class ListMoments  extends V1<ListMoments.Req, ListMoments.Res> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response listMoments(Req req,
                                 @PathParam("myChatUserId") Integer myChatUserId) {
+        req.myChatUserId = myChatUserId;
         return action(req, this::f);
     }
 
@@ -56,6 +57,7 @@ public class ListMoments  extends V1<ListMoments.Req, ListMoments.Res> {
 
         public static Res success(Result<Record> r) {
             Res res = new Res();
+            res.total = r.size();
             res.moments = new ArrayList<>();
             res.addMessage("Moment retrieved successfully");
             Iterator<Record> i = r.iterator();
