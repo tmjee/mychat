@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.matcher.Matchers;
 
 /**
  * @author tmjee
@@ -25,6 +26,8 @@ public class MyChatClientBuilder {
     }
 
     public MyChatClient build() {
+        final RequiresApplicationTokenInterceptor requiresApplicationTokenInterceptor = new RequiresApplicationTokenInterceptor();
+        final RequiresAccessTokenInterceptor requiresAccessTokenInterceptor = new RequiresAccessTokenInterceptor();
         final Configuration configuration = new Configuration(
                 applicationToken,
                 hostConnectionUrl
@@ -34,6 +37,26 @@ public class MyChatClientBuilder {
             protected void configure() {
                 bind(Configuration.class).toInstance(configuration);
                 bind(MyChatClient.class).in(Singleton.class);
+
+                bindInterceptor(
+                        Matchers.any(),
+                        Matchers.annotatedWith(RequiresApplicationTokenAnnotation.class),
+                        requiresApplicationTokenInterceptor);
+
+                bindInterceptor(
+                        Matchers.annotatedWith(RequiresApplicationTokenAnnotation.class),
+                        Matchers.any(),
+                        requiresApplicationTokenInterceptor);
+
+                bindInterceptor(
+                        Matchers.any(),
+                        Matchers.annotatedWith(RequiresAccessTokenAnnotation.class),
+                        requiresAccessTokenInterceptor);
+
+                bindInterceptor(
+                        Matchers.annotatedWith(RequiresAccessTokenAnnotation.class),
+                        Matchers.any(),
+                        requiresAccessTokenInterceptor);
             }
         });
         return injector.getInstance(MyChatClient.class);

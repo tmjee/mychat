@@ -20,7 +20,7 @@ import java.util.*;
 public class ChatDetails extends V1<ChatDetails.Req, ChatDetails.Res> {
 
     @POST
-    @Path("/chat/{chatId}/details")
+    @Path("/chats/{chatId}/details")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response chatDetails(Req req,
@@ -41,6 +41,7 @@ public class ChatDetails extends V1<ChatDetails.Req, ChatDetails.Res> {
         public Integer chatId;
         public Integer limit;
         public Integer offset;
+        public Integer myChatUserId;
 
         @Override
         protected void validate() {

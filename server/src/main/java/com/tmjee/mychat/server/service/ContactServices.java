@@ -5,6 +5,7 @@ import static com.tmjee.mychat.server.jooq.generated.Tables.*;
 import static java.lang.String.format;
 
 import com.google.inject.Provider;
+import com.tmjee.mychat.server.jooq.generated.Tables;
 import com.tmjee.mychat.server.jooq.generated.tables.MychatUser;
 import com.tmjee.mychat.server.jooq.generated.tables.Profile;
 import com.tmjee.mychat.server.jooq.generated.tables.records.ContactRecord;
@@ -79,25 +80,21 @@ public class ContactServices {
                     ).returning()
                     .fetchOne();
 
-            MychatUser myChatUser = MYCHAT_USER.as("m");
-            Profile profile = PROFILE.as("p");
             Record contactMyChatUser = dsl
-                    .select(profile.fields())
-                    .from(myChatUser)
-                    .leftOuterJoin(profile)
-                    .on(PROFILE.MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
-                    .where(MYCHAT_USER.MYCHAT_USER_ID.eq(req.contactMyChatUserId))
+                    .select(Tables.PROFILE.fields())
+                    .from(Tables.MYCHAT_USER)
+                    .leftOuterJoin(Tables.PROFILE)
+                    .on(Tables.PROFILE.MYCHAT_USER_ID.eq(Tables.MYCHAT_USER.MYCHAT_USER_ID))
+                    .where(Tables.MYCHAT_USER.MYCHAT_USER_ID.eq(req.contactMyChatUserId))
                     .fetchOne();
 
             return AddContacts.Res.success(contactMyChatUser);
         }
 
-        MychatUser myChatUser = MYCHAT_USER.as("m");
-        Profile profile = PROFILE.as("p");
         Record contactMyChatUser = dsl
-                .select(profile.fields())
-                .from(myChatUser)
-                .leftOuterJoin(profile)
+                .select(Tables.PROFILE.fields())
+                .from(Tables.MYCHAT_USER)
+                .leftOuterJoin(Tables.PROFILE)
                 .on(PROFILE.MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
                 .where(MYCHAT_USER.MYCHAT_USER_ID.eq(result.get(0).getContactMychatUserId()))
                 .fetchOne();

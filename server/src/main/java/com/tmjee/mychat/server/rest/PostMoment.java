@@ -2,6 +2,7 @@ package com.tmjee.mychat.server.rest;
 
 import com.tmjee.mychat.server.jooq.generated.tables.records.MomentRecord;
 import com.tmjee.mychat.server.service.MomentServices;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
@@ -23,9 +24,20 @@ public class PostMoment extends V1<PostMoment.Req, PostMoment.Res> {
     @Path("/moments/{myChatUserId}/post")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response postMoment(Req req,
+    public Response postMoment(@FormDataParam("media") InputStream is,
+                               @FormDataParam("media") FormDataBodyPart b,
+                               @FormDataParam("message") String message,
+                               @FormDataParam("applicationToken") String applicationToken,
+                               @FormDataParam("accessToken") String accessToken,
                                @PathParam("myChatUserId") Integer myChatUserId) {
+        Req req = new Req();
         req.myChatUserId = myChatUserId;
+        req.is = is;
+        req.b = b;
+        req.message = message;
+        req.applicationToken = applicationToken;
+        req.accessToken = accessToken;
+
         return action(req, this::f);
     }
 
@@ -39,14 +51,9 @@ public class PostMoment extends V1<PostMoment.Req, PostMoment.Res> {
     public static class Req extends V1.Req {
 
         public Integer myChatUserId;
-
         public String message;
-
-        @FormDataParam("image")
-        public InputStream imageIs;
-
-        @FormDataParam("image")
-        public FormDataContentDisposition imageD;
+        public InputStream is;
+        public FormDataBodyPart b;
 
         @Override
         protected void validate() {

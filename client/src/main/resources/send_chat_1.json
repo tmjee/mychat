@@ -1,0 +1,6 @@
+{
+  "myChatUserId":"${myChatUserId}",
+  "message":"${message}",
+  "applicationToken":"${applicationToken}",
+  "accessToken":"${accessToken}"
+}

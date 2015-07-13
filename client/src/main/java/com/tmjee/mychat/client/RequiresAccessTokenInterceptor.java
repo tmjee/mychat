@@ -10,7 +10,7 @@ public class RequiresAccessTokenInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-
-        return null;
+        // TODO:
+        return invocation.proceed();
     }
 }

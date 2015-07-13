@@ -54,10 +54,12 @@ public class CreateMyChat extends V1<CreateMyChat.Req, CreateMyChat.Res> {
 
     public static class Res extends V1.Res {
 
+        public Integer chatId;
         public List<Map<String, String>> members;
 
         public static Res success(ChatRecord chatRecord, Result<Record> chatMemberJoinMyChatUserJoinProfileResult) {
             Res res = new Res();
+            res.chatId = chatRecord.getChatId();
             res.members = new ArrayList<>();
             res.addMessage(format("chat %s created", chatRecord.getName()));
             Iterator<Record> i = chatMemberJoinMyChatUserJoinProfileResult.iterator();

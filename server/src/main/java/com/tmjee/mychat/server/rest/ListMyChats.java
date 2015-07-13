@@ -46,6 +46,8 @@ public class ListMyChats extends V1<ListMyChats.Req, ListMyChats.Res> {
     public static class Req extends V1.Req {
 
         public Integer myChatUserId;
+        public Integer limit;
+        public Integer offset;
 
         @Override
         protected void validate() {

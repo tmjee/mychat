@@ -1,0 +1,5 @@
+{
+  "whatsUp":"${whatsUp}",
+  "applicationToken":"${applicationToken}",
+  "accessToken":"${accessToken}"
+}

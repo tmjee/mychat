@@ -1,0 +1,7 @@
+{
+  "longitude":"${longitude}",
+  "latitude":"${latitude}",
+  "name":"${name}",
+  "applicationToken":"${applicationToken}",
+  "accessToken":"${accessToken}"
+}

@@ -1,0 +1,7 @@
+{
+  "applicationToken":"${applicationToken}",
+  "accessToken":"${accessToken}",
+  "offset":${offset},
+  "limit":${limit},
+  "myChatUserId":"${myChatUserId}"
+}

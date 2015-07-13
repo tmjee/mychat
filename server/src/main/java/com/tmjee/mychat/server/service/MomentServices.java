@@ -2,6 +2,7 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.tmjee.mychat.common.domain.MomentTypeEnum;
 import com.tmjee.mychat.server.jooq.generated.Tables;
 import com.tmjee.mychat.server.jooq.generated.tables.records.MomentRecord;
 import com.tmjee.mychat.server.rest.ListMoments;
@@ -37,15 +38,50 @@ public class MomentServices {
     public PostMoment.Res postMoment(PostMoment.Req req) throws IOException {
         DSLContext dsl = dslProvider.get();
 
+        byte[] b = null;
+        byte[] eb = null;
+        String fileName = null;
+        String mimeType = "text/plain";
+        MomentTypeEnum momentType = MomentTypeEnum.TEXT;
+        if (req.is != null) {
+            b = IOUtils.toBytes(req.is);
+            eb = IOUtils.base64Encoded(b);
+            fileName = req.b.getContentDisposition().getFileName() == null ?
+                        req.b.getName():
+                        req.b.getContentDisposition().getFileName();
+            mimeType = req.b.getMediaType().toString();
+            if (mimeType != null) {
+                if (mimeType.toLowerCase().startsWith("audio")) {
+                    momentType = MomentTypeEnum.AUDIO;
+                } else if (mimeType.toLowerCase().startsWith("video")) {
+                    momentType = MomentTypeEnum.VIDEO;
+                } else if (mimeType.toLowerCase().startsWith("image")) {
+                    momentType = MomentTypeEnum.IMAGE;
+                } else {
+                    momentType = MomentTypeEnum.UNKNOWN;
+                }
+            }
 
-        byte[] b = IOUtils.toBytes(req.imageIs);
+        }
         MomentRecord momentRecord =
-        dsl.insertInto(Tables.MOMENT)
-                .columns(Tables.MOMENT.MYCHAT_USER_ID, Tables.MOMENT.MESSAGE,
-                        Tables.MOMENT.BYTES, Tables.MOMENT.ENCODED,
-                        Tables.MOMENT.CREATION_DATE)
-                .values(req.myChatUserId, req.message, b, IOUtils.base64Encoded(b),
-                        new Timestamp(System.currentTimeMillis()))
+            dsl.insertInto(Tables.MOMENT)
+                .columns(Tables.MOMENT.MYCHAT_USER_ID,
+                        Tables.MOMENT.MESSAGE,
+                        Tables.MOMENT.BYTES,
+                        Tables.MOMENT.ENCODED,
+                        Tables.MOMENT.CREATION_DATE,
+                        Tables.MOMENT.TYPE,
+                        Tables.MOMENT.MIME_TYPE,
+                        Tables.MOMENT.FILENAME)
+                .values(req.myChatUserId,
+                        req.message,
+                        b,
+                        eb,
+                        new Timestamp(System.currentTimeMillis()),
+                        momentType.name(),
+                        mimeType,
+                        fileName
+                )
                 .returning()
                 .fetchOne();
 

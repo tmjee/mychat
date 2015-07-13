@@ -46,7 +46,6 @@ public class ListMoments  extends V1<ListMoments.Req, ListMoments.Res> {
 
         @Override
         protected void validate() {
-
         }
     }
 
@@ -55,11 +54,10 @@ public class ListMoments  extends V1<ListMoments.Req, ListMoments.Res> {
         public Integer total;
         public List<Map<String, String>> moments;
 
-
         public static Res success(Result<Record> r) {
             Res res = new Res();
             res.moments = new ArrayList<>();
-            res.addMessage("Moment retrived succcessfully");
+            res.addMessage("Moment retrieved successfully");
             Iterator<Record> i = r.iterator();
             while(i.hasNext()) {
                 Map<String, String> m = new HashMap<>();

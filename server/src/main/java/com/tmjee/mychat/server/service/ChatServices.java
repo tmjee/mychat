@@ -2,6 +2,7 @@ package com.tmjee.mychat.server.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.tmjee.mychat.server.jooq.generated.Tables;
 import com.tmjee.mychat.server.jooq.generated.tables.ChatMember;
 import com.tmjee.mychat.server.jooq.generated.tables.MychatUser;
 import com.tmjee.mychat.server.jooq.generated.tables.Profile;
@@ -52,23 +53,26 @@ public class ChatServices {
                 ).returning().fetchOne();
 
         // CHAT_MEMBER
-        InsertValuesStep2 step = dsl.insertInto(CHAT_MEMBER)
-                .columns(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID, CHAT_MEMBER.STATUS);
+        InsertValuesStep3 step = dsl.insertInto(CHAT_MEMBER)
+                .columns(
+                        CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID,
+                        CHAT_MEMBER.CHAT_ID,
+                        CHAT_MEMBER.STATUS);
         for (Integer memberMyChatUserId : req.membersMyChatUserIds) {
-                    step.values(memberMyChatUserId, ChatMemberStatusEnum.JOINED.name());
+                    step.values(
+                            memberMyChatUserId,
+                            chatRecord.getChatId(),
+                            ChatMemberStatusEnum.JOINED.name());
         }
         Result chatMemberResult = step.returning().fetch();
 
 
         // CHAT_MEMBER join with MYCHAT_USER join with PROFILE
-        ChatMember chatMember = CHAT_MEMBER.as("cm");
-        MychatUser myChatUser = MYCHAT_USER.as("mcu");
-        Profile profile = PROFILE.as("p");
         Result<Record> chatMemberJoinMyChatUseJoinProfileResult = dsl.select()
-                .from(chatMember)
-                .leftOuterJoin(myChatUser).on(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
-                .leftOuterJoin(profile).on(PROFILE.MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
-                .and(CHAT_MEMBER.CHAT_ID.eq(chatRecord.getChatId()))
+                .from(Tables.CHAT_MEMBER)
+                .leftOuterJoin(Tables.MYCHAT_USER).on(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
+                .leftOuterJoin(Tables.PROFILE).on(PROFILE.MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
+                .where(CHAT_MEMBER.CHAT_ID.eq(chatRecord.getChatId()))
                 .fetch();
 
         return CreateMyChat.Res.success(chatRecord, chatMemberJoinMyChatUseJoinProfileResult);
@@ -141,6 +145,8 @@ public class ChatServices {
                 .where(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID
                         .in(req.myChatUserId)
                         .and(CHAT_MEMBER.STATUS.eq(ChatMemberStatusEnum.JOINED.name())))
+                .limit(req.limit)
+                .offset(req.offset)
                 .fetch()
                 .stream()
                 .collect(
@@ -159,10 +165,14 @@ public class ChatServices {
 
         Result<ChatMemberRecord> chatMemberResults = dsl.update(CHAT_MEMBER)
                 .set(CHAT_MEMBER.STATUS, ChatMemberStatusEnum.LEFT.name())
-                .where(CHAT_MEMBER.CHAT_ID.eq(req.chatId))
-                .and(CHAT_MEMBER.CHAT_MEMBER_ID.eq(req.myChatUserId))
-                .and(CHAT_MEMBER.STATUS.eq(ChatMemberStatusEnum.JOINED.name()))
-                .returning().fetch();
+                .where(
+                    CHAT_MEMBER.CHAT_ID.eq(req.chatId)
+                    .and(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID.eq(req.myChatUserId))
+                    .and(CHAT_MEMBER.STATUS.eq(ChatMemberStatusEnum.JOINED.name()))
+                )
+                .returning()
+                .fetch();
+
 
         if (!chatMemberResults.isEmpty()) {
 
@@ -201,10 +211,12 @@ public class ChatServices {
         Result<Record> chatMessageRecords =
         dsl.select()
                 .from(CHAT_MESSAGE)
-                .leftOuterJoin(CHAT_MEMBER).on(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID.eq(CHAT_MESSAGE.CHAT_MEMBER_ID))
+                .leftOuterJoin(CHAT_MEMBER).on(CHAT_MEMBER.CHAT_MEMBER_ID.eq(CHAT_MESSAGE.CHAT_MEMBER_ID))
                 .leftOuterJoin(MYCHAT_USER).on(MYCHAT_USER.MYCHAT_USER_ID.eq(CHAT_MEMBER.CHAT_MEMBER_MYCHAT_USER_ID))
                 .leftOuterJoin(PROFILE).on(PROFILE.MYCHAT_USER_ID.eq(MYCHAT_USER.MYCHAT_USER_ID))
                 .where(CHAT_MESSAGE.CHAT_ID.eq(req.chatId))
+                .limit(req.limit)
+                .offset(req.offset)
                 .fetch();
 
         return ChatDetails.Res.success(chatRecord, chatMemberRecords, chatMessageRecords);

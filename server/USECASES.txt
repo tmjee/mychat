@@ -88,7 +88,8 @@ POST
 http://localhost:8080/v1/avatar/{myChatUserId}/post
 {
     "avatar":"...",
-    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52"
+    "myChatUserId":"...",
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
 
@@ -168,6 +169,12 @@ http://localhost:8080/v1/contacts/{myChatUserId}/add
     "accessToken":"...."
 }
 
+Response #1:
+------------
+{
+    "messages":["Contact added for 5d616a66-d4ec-42e8-8061-be7bccf8cc1e, waiting acceptance"],
+    "valid":true
+}
 
 
 =================================================================================================
@@ -182,6 +189,16 @@ http://localhost:8080/v1/contacts/{myChatUserId}/accept
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
+
+Response #1:
+------------
+{
+    "messages":["Contact accepted"],
+    "valid":true
+}
+
+
+
 
 =================================================================================================
     Profile
@@ -214,7 +231,7 @@ Response #1
 
 
 =================================================================================================
-    Create Chat
+    Create My Chat
 =================================================================================================
 Request:
 --------
@@ -222,13 +239,65 @@ POST
 http://localhost:8080/v1/mychats/{myChatUserId}/create
 {
     "membersMyChatUserIds":[
-        "...",
-        "..."
+        "...", "..."
     ],
     "name":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
+
+Response #1:
+------------
+{
+    "messages":["chat testChat_1436761588997 created"],
+    "valid":true,
+    "chatId":103,
+    "members":[
+        {"name":"Jack","myChatUserId":"2","status":"JOINED"},
+        {"name":"Noah","myChatUserId":"3","status":"JOINED"},
+        {"name":"Evan","myChatUserId":"4","status":"JOINED"},
+        {"name":"Biz","myChatUserId":"5","status":"JOINED"}
+    ]
+}
+
+
+
+
+
+
+
+=================================================================================================
+    List My Chats
+=================================================================================================
+Request:
+--------
+POST
+http://localhost:8080/v1/mychats/{myChatUserId}/list
+{
+    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
+    "accessToken":"...",
+    "offset":"10",
+    "limit":"5"
+}
+
+Response #1:
+------------
+{
+    "messages":["Chats retrieved"],
+    "valid":true,
+    "chats":[
+        {"name":"Toby_Chat_1","creatorName":"Toby","creatorMyChatUserId":1,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Toby_Chat_2","creatorName":"Toby","creatorMyChatUserId":1,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Toby_Chat_3","creatorName":"Toby","creatorMyChatUserId":1,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Toby_Chat_4","creatorName":"Toby","creatorMyChatUserId":1,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"},{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Toby_Chat_5","creatorName":"Toby","creatorMyChatUserId":1,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Toby_Chat_6","creatorName":"Toby","creatorMyChatUserId":1,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Jack_Chat_1","creatorName":"Toby","creatorMyChatUserId":2,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Jack_Chat_1","creatorName":"Toby","creatorMyChatUserId":2,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]},
+        {"name":"Jack_Chat_1","creatorName":"Toby","creatorMyChatUserId":2,"creationDate":1436758945185,"members":[{"name":"Toby","myChatUserId":"1"}]}
+    ]
+}
+
 
 
 =================================================================================================
@@ -247,6 +316,16 @@ http://localhost:8080/v1/chats/{chatId}/join
     "accessToken":"..."
 }
 
+Response #1:
+------------
+{
+    "messages":["members successfully added"],
+    "valid":true,
+    "members":["1","4","5"]
+}
+
+
+
 
 =================================================================================================
     Send Chat
@@ -262,19 +341,15 @@ http://localhost:8080/v1/chats/{chatId}/send
     "accessToken":"..."
 }
 
-=================================================================================================
-    List Chats
-=================================================================================================
-Request:
---------
-POST
-http://localhost:8080/v1/mychats/{myChatUserId}/list
+Response #1:
+------------
 {
-    "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
-    "accessToken":"...",
-    "offset":"10",
-    "limit":"5"
+    "messages":["Message added successfully"],
+    "valid":true
 }
+
+
+
 
 =================================================================================================
     Chat details
@@ -286,9 +361,75 @@ http://localhost:8080/v1/chats/{chatId}/details
 {
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...",
+    "myChatUserId":"...",
     "offset":"10",
     "limit":"5"
 }
+
+Response #1:
+------------
+{
+    "messages":[
+        {"message":"toby message 1","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 5","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 2","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 6","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 9","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 3","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"my chat message 1436762666974","myChatUserId":1,"chatter":"Toby","creationDate":1436762667003},
+        {"message":"toby message 8","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 4","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"toby message 7","myChatUserId":1,"chatter":"Toby","creationDate":1436758946738},
+        {"message":"jack message 7","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 5","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 3","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 6","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 9","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 2","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 1","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 4","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"jack message 8","myChatUserId":2,"chatter":"Jack","creationDate":1436758946738},
+        {"message":"noah message 6","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 1","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 2","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 3","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 4","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 5","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 7","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 8","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"noah message 9","myChatUserId":3,"chatter":"Noah","creationDate":1436758946738},
+        {"message":"evan message 9","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 8","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 7","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 2","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 4","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 3","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 5","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 6","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"evan message 1","myChatUserId":4,"chatter":"Evan","creationDate":1436758946738},
+        {"message":"biz message 4","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 6","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 3","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 7","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 2","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 8","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 1","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738},
+        {"message":"biz message 5","myChatUserId":5,"chatter":"Biz","creationDate":1436758946738}
+    ],
+    "valid":true,
+    "chatId":1,
+    "chatName":"Toby_Chat_1",
+    "members":[
+        {"name":"Jack","myChatUserId":"2","status":"JOINED"},
+        {"name":"Noah","myChatUserId":"3","status":"LEFT"},
+        {"name":"Evan","myChatUserId":"4","status":"JOINED"},
+        {"name":"Biz","myChatUserId":"5","status":"JOINED"},
+        {"name":"Toby","myChatUserId":"1","status":"JOINED"}
+    ]
+}
+
+
+
 
 =================================================================================================
     Leave Chat
@@ -302,6 +443,12 @@ POST http://localhost:8080/v1/chats/{chatId}/leave
     "accessToken":"..."
 }
 
+Response #1
+-----------
+{
+    "messages":["Chatter Biz left"],
+    "valid":true
+}
 
 
 
@@ -311,14 +458,19 @@ POST http://localhost:8080/v1/chats/{chatId}/leave
 Request:
 --------
 POST
-http://localhost:8080/v1/whatsup
+http://localhost:8080/v1/whatsup/{myChatUserId}/update
 {
-    "myChatUserId":"...",
     "whatsup":"....",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
 
+Response #1
+-----------
+{
+    "messages":["Updated what's up."],
+    "valid":true
+}
 
 
 =================================================================================================
@@ -327,14 +479,22 @@ http://localhost:8080/v1/whatsup
 Request:
 --------
 POST
-http://localhost:8080/v1/location
+http://localhost:8080/v1/location/{myChatUserId}/update
 {
-    "myChatUserId":"..."
     "longitude":"...",
     "latitude":"...",
+    "name":"....",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }
+
+Response #1:
+------------
+{
+    "messages":["Location updated"],
+    "valid":true
+}
+
 
 
 =================================================================================================
@@ -361,7 +521,7 @@ POST
 http://localhost:8080/v1/moments/{myChatUserId}/post
 {
     "message":"...",
-    "image":"..."
+    "media":"...",
     "applicationToken":"d5b87197-495c-47ca-959d-332921004a52",
     "accessToken":"...."
 }

@@ -33,13 +33,14 @@ public class LocationServices {
             dsl.update(LOCATION)
                     .set(LOCATION.LATITUDE, req.latitude)
                     .set(LOCATION.LONGITUDE, req.longitude)
+                    .set(LOCATION.NAME, req.name)
                     .where(LOCATION.MYCHAT_USER_ID.eq(req.myChatUserId))
                     .returning()
                     .fetchOne();
         } else { // insert
            dsl.insertInto(LOCATION)
-                   .columns(LOCATION.MYCHAT_USER_ID, LOCATION.LONGITUDE, LOCATION.LATITUDE)
-                   .values(req.myChatUserId, req.latitude, req.longitude)
+                   .columns(LOCATION.MYCHAT_USER_ID, LOCATION.NAME, LOCATION.LONGITUDE, LOCATION.LATITUDE)
+                   .values(req.myChatUserId, req.name, req.latitude, req.longitude)
                    .returning()
                    .fetchOne();
         }

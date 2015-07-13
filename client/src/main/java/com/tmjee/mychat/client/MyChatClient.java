@@ -8,7 +8,6 @@ import com.tmjee.mychat.common.domain.MyChatUserIdentificationTypeEnum;
 import com.tmjee.mychat.common.domain.MyChatUserStatusEnum;
 import okio.Buffer;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -17,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,6 +54,7 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
     @RequiresApplicationTokenAnnotation
     public Map<String, Object> logon(String email, String password) throws IOException, URISyntaxException {
+        cleanup();
 
        Map<String, Object> mappedResponse = new Command()
                 .pathed("/logon")
@@ -146,12 +147,13 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
     @RequiresApplicationTokenAnnotation
     @RequiresAccessTokenAnnotation
-    public Map<String, Object> addContact(Integer contactMyChatUserId) throws IOException, URISyntaxException {
+    public Map<String, Object> addContact(Integer myChatUserId, Integer contactMyChatUserId) throws IOException, URISyntaxException {
         return new Command()
-                .pathed(format("/contacts/%s/add", contactMyChatUserId))
+                .pathed(format("/contacts/%s/add", myChatUserId))
                 .withJsonResource("add_contacts_1.json")
                 .bindVariables("applicationToken", getApplicationToken())
                 .bindVariables("accessToken", getAccessToken())
+                .bindVariables("contactMyChatUserId", contactMyChatUserId)
                 .build()
                 .executeWith(this)
                 .mapped();
@@ -160,12 +162,139 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
     @RequiresApplicationTokenAnnotation
     @RequiresAccessTokenAnnotation
-    public Map<String, Object> acceptContact(Integer contactMyChatUserId) throws IOException, URISyntaxException {
+    public Map<String, Object> acceptContact(Integer myChatUserId, Integer contactMyChatUserId) throws IOException, URISyntaxException {
         return new Command()
-                .pathed(format("/contacts/%s/accept", contactMyChatUserId))
+                .pathed(format("/contacts/%s/accept", myChatUserId))
                 .withJsonResource("accept_contacts_1.json")
                 .bindVariables("applicationToken", getApplicationToken())
                 .bindVariables("accessToken", getAccessToken())
+                .bindVariables("contactMyChatUserId", contactMyChatUserId)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> whatsUp(Integer myChatUserId, String whatsup) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/whatsup/%s/update", myChatUserId))
+                .withJsonResource("whatsup_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("whatsUp", whatsup)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> updateLocation(Integer myChatUserId, String name, Float latitude, Float longitude) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/location/%s/update", myChatUserId))
+                .withJsonResource("location_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("name", name)
+                .bindVariables("latitude", latitude)
+                .bindVariables("longitude", longitude)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> createMyChat(Integer myChatUserId, List<Integer> membersChatUserId, String chatName) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/mychats/%s/create", myChatUserId))
+                .withJsonResource("create_mychat_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("chatName", chatName)
+                .bindVariables("membersMyChatUserIds", membersChatUserId)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> listMyChats(Integer myChatUserId, Integer offset, Integer limit) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/mychats/%s/list", myChatUserId))
+                .withJsonResource("list_mychats_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("limit", limit)
+                .bindVariables("offset", offset)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> joinChat(Integer chatId, Integer myChatUserId, List<Integer> membersMyChatUserIds) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/chats/%s/join", chatId))
+                .withJsonResource("join_chat_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("membersMyChatUserIds", membersMyChatUserIds)
+                .bindVariables("myChatUserId", myChatUserId)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> sendChat(Integer chatId, Integer myChatUserId, String chat) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/chats/%s/send", chatId))
+                .withJsonResource("send_chat_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("message", chat)
+                .bindVariables("myChatUserId", myChatUserId)
+                .build()
+                .executeWith(this)
+                .mapped();
+    }
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> chatDetails(Integer chatId, Integer myChatUserId, Integer limit, Integer offset) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/chats/%s/details", chatId))
+                .withJsonResource("chat_details_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("myChatUserId", myChatUserId)
+                .bindVariables("limit", limit)
+                .bindVariables("offset", offset)
+                .build()
+                .executeWith(this)
+                .mapped();
+
+    }
+
+
+    @RequiresApplicationTokenAnnotation
+    @RequiresAccessTokenAnnotation
+    public Map<String, Object> leaveChat(Integer chatId, Integer myChatUserId) throws IOException, URISyntaxException {
+        return new Command()
+                .pathed(format("/chats/%s/leave", chatId))
+                .withJsonResource("leave_chat_1.json")
+                .bindVariables("applicationToken", getApplicationToken())
+                .bindVariables("accessToken", getAccessToken())
+                .bindVariables("myChatUserId", myChatUserId)
                 .build()
                 .executeWith(this)
                 .mapped();
@@ -174,7 +303,11 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
 
 
-
+    private void cleanup() {
+        myChatUserId = null;
+        accessToken = null;
+        myself = null;
+    }
 
 
     public static String readResourceAsString(String jsonFileResource, Map<String, Object> variables) throws URISyntaxException, IOException {
@@ -223,6 +356,26 @@ public class MyChatClient implements AccessTokenAware, ApplicationTokenAware, My
 
         JsonResourceCommand bindVariables(String var, int val) {
             vars.put(var, String.valueOf(val));
+            return this;
+        }
+
+        JsonResourceCommand bindVariables(String var, float val) {
+            vars.put(var, String.valueOf(val));
+            return this;
+        }
+
+        JsonResourceCommand bindVariables(String var, List<?> vals) {
+            StringBuilder b = new StringBuilder();
+            b.append("[");
+            int length = vals.size()-1;
+            for (int a=0; a< vals.size(); a++) {
+                b.append(vals.get(a).toString());
+                if (a<length) {
+                    b.append(",");
+                }
+            }
+            b.append("]");
+            vars.put(var, b.toString());
             return this;
         }
 

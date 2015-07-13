@@ -89,12 +89,14 @@ public class RegisterServices {
                             PROFILE.WHATSUP,
                             PROFILE.CREATION_DATE,
                             PROFILE.FULLNAME,
-                            PROFILE.GENDER)
+                            PROFILE.GENDER,
+                            PROFILE.MYCHAT_USER_ID)
                     .values(
                             "",
                             new Timestamp(System.currentTimeMillis()),
                             req.fullname,
-                            req.gender.name()
+                            req.gender.name(),
+                            mychatUserRecord.getMychatUserId()
                     ).returning().fetchOne();
 
 
