@@ -65,20 +65,19 @@ public class MyChatImageServlet extends HttpServlet {
                             .fetchOne();
 
                     if (momentRecord != null) {
-                        byte[] b = momentId.getBytes();
 
-                        resp.setContentType(momentRecord.getMimeType());
-                        resp.setContentLength(b.length);
-                        resp.setDateHeader("Modified-Since",
-                                momentRecord.getCreationDate().getTime());
-                        resp.getOutputStream().write(b);
-                        resp.flushBuffer();
-                        return;
+                        byte[] b = momentRecord.getBytes();
+
+                        if (b != null) {
+                            resp.setContentType(momentRecord.getMimeType());
+                            resp.setContentLength(b.length);
+                            resp.setDateHeader("Modified-Since",
+                                    momentRecord.getCreationDate().getTime());
+                            resp.getOutputStream().write(b);
+                            resp.flushBuffer();
+                            return;
+                        }
                     }
-
-
-                    return;
-
                 } else if (pathInfo.startsWith(AVATAR_PREFIX)) {
                     String avatarId = pathInfo.substring(AVATAR_PREFIX.length());
                     int _avatarId =  Integer.parseInt(avatarId);
