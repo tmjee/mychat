@@ -18,6 +18,9 @@ public class LogonActivity extends Activity {
         super.onCreate(savedInstanceState);
         getIntent().getStringExtra(INTENT_EXTRA_ORIGINAL_ACTIVITY);
 
+        getFragmentManager().beginTransaction()
+                .replace(R.id.f_container, new LogonFragment())
+                .commit();
 
     }
 

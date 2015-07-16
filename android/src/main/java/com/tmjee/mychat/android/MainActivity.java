@@ -1,12 +1,11 @@
 package com.tmjee.mychat.android;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 /**
  * @author tmjee
  */
-public class MainActivity extends Activity {
+public class MainActivity extends AbstractAuthenticationActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
