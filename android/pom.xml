@@ -42,6 +42,11 @@
                 <version>${api.version}</version>
                 <scope>provided</scope>
         </dependency-->
+        <dependency>
+            <groupId>com.tmjee.mychat</groupId>
+            <artifactId>mychat-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 	<build>
