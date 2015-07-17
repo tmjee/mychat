@@ -1,0 +1,6 @@
+# view AndroidManifest.xml #generated:19
+-keep class com.example.myapp.LogonActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:11
+-keep class com.example.myapp.MyActivity { <init>(...); }
+
