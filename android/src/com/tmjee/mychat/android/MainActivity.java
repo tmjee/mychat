@@ -1,9 +1,9 @@
-package com.example.myapp;
+package com.tmjee.mychat.android;
 
-import android.app.Activity;
 import android.os.Bundle;
+import com.tmjee.mychat.android.R;
 
-public class MyActivity extends AbstractAuthenticationActivity {
+public class MainActivity extends AbstractAuthenticationActivity {
     /**
      * Called when the activity is first created.
      */

@@ -1,15 +1,16 @@
-package com.example.myapp;
+package com.tmjee.mychat.android;
 
 import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
+
+import com.tmjee.mychat.android.R;
 
 
 /**

@@ -1,7 +1,6 @@
-package com.example.myapp;
+package com.tmjee.mychat.android;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 /**
