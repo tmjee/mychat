@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="custom_targets">
+
+    <property name="mavenrepo.base" value="/home/tmjee/.m2/repository"/>
+
+    <property name="aopaliance.version" value="1.0"/>
+    <property name="guava.version" value="16.0.1" />
+    <property name="guice.version" value="4.0"/>
+    <property name="jackson.version" value="2.2.4" />
+    <property name="javax.inject.version" value="1" />
+    <property name="okhttp.version" value="2.4.0"/>
+    <property name="okio.version" value="1.4.0" />
+    <property name="mychat.version" value="1.0-SNAPSHOT" />
+
+    <target name="copyDependencies" description="copy over dependencies from sister projects">
+        <!--
+            aopaliance-1.0.jar
+            guava-16.0.1.jar
+            guice-4.0-no_aop.jar
+            jackson-annotations-2.2.4.jar
+            jackson-core-2.2.4.jar
+            jackson-databind-2.2.4.jar
+            javax.inject-1.jar
+            okhttp-2.4.0.jar
+            okio-1.4.0.jar
+            mychat-common-1.0-SNAPSOT.jar
+            mychat-client-1.0-SNAPSHOT.jar
+        -->
+        <copyfile src="${mavenrepo.base}/aopalliance/aopalliance/${aopaliance.version}/aopalliance-${aopaliance.version}.jar"
+                  dest="${basedir}/libs/aopalliance-${aopaliance.version}.jar" />
+        <copyfile src="${mavenrepo.base}/com/google/guava/guava/${guava.version}/guava-${guava.version}.jar"
+                  dest="${basedir}/libs/guava-${guava.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/google/inject/guice/${guice.version}/guice-${guice.version}-no_aop.jar"
+                  dest="${basedir}/libs/guice-${guice.version}-no_aop.jar"/>
+        <copyfile src="${mavenrepo.base}/com/fasterxml/jackson/core/jackson-annotations/${jackson.version}/jackson-annotations-${jackson.version}.jar"
+                  dest="${basedir}/libs/jackson-annotations-${jackson.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/fasterxml/jackson/core/jackson-core/${jackson.version}/jackson-core-${jackson.version}.jar"
+                  dest="${basedir}/libs/jackson-core-${jackson.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/fasterxml/jackson/core/jackson-databind/${jackson.version}/jackson-databind-${jackson.version}.jar"
+                  dest="${basedir}/libs/jackson-databind-${jackson.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/javax/inject/javax.inject/${javax.inject.version}/javax.inject-${javax.inject.version}.jar"
+                  dest="${basedir}/libs/javax.inject-${javax.inject.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/squareup/okhttp/okhttp/${okhttp.version}/okhttp-${okhttp.version}.jar"
+                  dest="${basedir}/libs/okhttp-${okhttp.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/squareup/okio/okio/${okio.version}/okio-${okio.version}.jar"
+                  dest="${basedir}/libs/okio-${okio.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/tmjee/mychat/mychat-common/${mychat.version}/mychat-common-${mychat.version}.jar"
+                  dest="${basedir}/libs/mychat-common-${mychat.version}.jar"/>
+        <copyfile src="${mavenrepo.base}/com/tmjee/mychat/mychat-client/${mychat.version}/mychat-client-${mychat.version}.jar"
+                  dest="${basedir}/libs/mychat-client-${mychat.version}.jar"/>
+
+    </target>
+
+
+</project>

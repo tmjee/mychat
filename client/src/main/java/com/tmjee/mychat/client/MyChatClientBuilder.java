@@ -38,6 +38,7 @@ public class MyChatClientBuilder {
                 bind(Configuration.class).toInstance(configuration);
                 bind(MyChatClient.class).in(Singleton.class);
 
+                /*
                 bindInterceptor(
                         Matchers.any(),
                         Matchers.annotatedWith(RequiresApplicationTokenAnnotation.class),
@@ -57,6 +58,7 @@ public class MyChatClientBuilder {
                         Matchers.annotatedWith(RequiresAccessTokenAnnotation.class),
                         Matchers.any(),
                         requiresAccessTokenInterceptor);
+                        */
             }
         });
         return injector.getInstance(MyChatClient.class);

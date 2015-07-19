@@ -20,7 +20,6 @@ public class LogonActivity extends Activity {
         getFragmentManager().beginTransaction()
                 .replace(R.id.f_container, LogonFragment.newInstance())
                 .commit();
-
     }
 
     @Override
@@ -29,11 +28,4 @@ public class LogonActivity extends Activity {
     }
 
 
-    private static class LogonAsyncTask extends AsyncTask<Bundle, Integer, Bundle> {
-
-        @Override
-        protected Bundle doInBackground(Bundle... params) {
-            return null;
-        }
-    }
 }

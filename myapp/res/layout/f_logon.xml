@@ -6,16 +6,52 @@
               android:layout_height="match_parent"
         >
 
+    <FrameLayout
+        android:id="@+id/loadingFrame"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"
+        >
+        <LinearLayout
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/loadingMessage"
+                android:text="Loading..."
+                android:layout_marginTop="20dip"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </FrameLayout>
+
+
     <LinearLayout
+        android:id="@+id/logonFrame"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <Space
+
+            <Space
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 />
-        <EditText
+
+            <EditText
                 android:id="@+id/email"
                 android:hint="@string/hint_email"
                 android:inputType="textEmailAddress"
@@ -25,39 +61,47 @@
                 android:textAlignment="center"
                 android:layout_weight="0.8"
                 android:paddingBottom="10dip"
+                android:nextFocusForward="@+id/password"
+                android:nextFocusDown="@+id/password"
                 />
-        <Space
+
+            <Space
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 />
-    </LinearLayout>
+        </LinearLayout>
 
-    <LinearLayout
+        <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <Space
+
+            <Space
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 />
-        <EditText
+
+            <EditText
                 android:id="@+id/password"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
-                android:imeOptions="actionNext"
+                android:imeOptions="actionDone"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:layout_weight="0.8"
+                android:nextFocusUp="@+id/email"
                 />
-        <Space
+
+            <Space
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
                 />
+        </LinearLayout>
     </LinearLayout>
 
 
