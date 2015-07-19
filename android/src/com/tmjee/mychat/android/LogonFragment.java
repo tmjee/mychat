@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 
-import com.tmjee.mychat.android.R;
-
 
 /**
  * @author tmjee
