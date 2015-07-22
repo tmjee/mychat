@@ -18,7 +18,7 @@ public class AbstractAuthenticationActivity extends Activity {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences = getSharedPreferences(AUTH_PREFERENCES, MODE_PRIVATE);
         String accessToken = sharedPreferences.getString("accessToken", null);
-        System.out.println("****** accessToken="+accessToken);
+
         if (accessToken == null) {
 
             Intent i = new Intent(this, LogonActivity.class);

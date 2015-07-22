@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/chatsOptionsMenuItem"
+        android:icon="@drawable/ic_chat_16"
+        android:title="@string/action_chats"
+        android:showAsAction="always"/>
+
+    <item
+        android:id="@+id/contactsOptionsMenuItem"
+        android:icon="@drawable/ic_contacts_16"
+        android:title="@string/action_contacts"
+        android:showAsAction="always"/>
+
+    <item
+        android:id="@+id/discoverOptionsMenuItem"
+        android:icon="@drawable/ic_discover_16"
+        android:title="@string/action_discover"
+        android:showAsAction="always"/>
+
+    <item
+        android:id="@+id/myselfOptionsMenuItem"
+        android:icon="@drawable/ic_myself_16"
+        android:title="@string/action_myself"
+        android:showAsAction="always"/>
+
+</menu>

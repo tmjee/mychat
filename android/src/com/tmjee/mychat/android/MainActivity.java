@@ -3,6 +3,8 @@ package com.tmjee.mychat.android;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends AbstractAuthenticationActivity {
     /**
@@ -11,46 +13,42 @@ public class MainActivity extends AbstractAuthenticationActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        InternalTabListener tabListener = new InternalTabListener();
-
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.addTab(
-                actionBar.newTab()
-                    .setText("Chats")
-                    .setTabListener(tabListener));
-        actionBar.addTab(
-                actionBar.newTab()
-                    .setText("Contacts")
-                    .setTabListener(tabListener));
-        actionBar.addTab(
-                actionBar.newTab()
-                    .setText("Discover")
-                    .setTabListener(tabListener));
-        actionBar.addTab(
-                actionBar.newTab()
-                    .setText("Myself")
-                    .setTabListener(tabListener));
         setContentView(R.layout.main);
+
+
+
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+        return true;
+    }
 
-    private static class InternalTabListener implements ActionBar.TabListener {
 
-        @Override
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-            fragmentTransaction.replace()
-        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!super.onOptionsItemSelected(item)) {
+            int itemId = item.getItemId();
+            switch(itemId) {
+                case R.id.chatsOptionsMenuItem:
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.tabContent, ChatsFragment.newInstance())
+                            .commit();
+                    break;
+                case R.id.contactsOptionsMenuItem:
 
-        @Override
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+                    break;
+                case R.id.discoverOptionsMenuItem:
 
-        }
+                    break;
+                case R.id.myselfOptionsMenuItem:
 
-        @Override
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+                    break;
+            }
 
         }
     }

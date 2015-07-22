@@ -3,5 +3,9 @@
     <string name="app_name">My Chat</string>
     <string name="hint_email">Enter Email</string>
     <string name="hint_password">Enter Password</string>
+    <string name="action_chats">Chats</string>
+    <string name="action_contacts">Contacts</string>
+    <string name="action_discover">Discover</string>
+    <string name="action_myself">Myself</string>
 
 </resources>
