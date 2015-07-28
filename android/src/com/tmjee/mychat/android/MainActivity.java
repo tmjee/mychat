@@ -36,20 +36,29 @@ public class MainActivity extends AbstractAuthenticationActivity {
                 case R.id.chatsOptionsMenuItem:
                     getFragmentManager()
                             .beginTransaction()
-                            .replace(R.id.tabContent, ChatsFragment.newInstance())
+                            .replace(R.id.f_container, ChatsFragment.newInstance())
                             .commit();
-                    break;
+                    return true;
                 case R.id.contactsOptionsMenuItem:
-
-                    break;
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.f_container, ContactsFragment.newInstance())
+                            .commit();
+                    return true;
                 case R.id.discoverOptionsMenuItem:
-
-                    break;
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.f_container, DiscoverFragment.newInstance())
+                            .commit();
+                    return true;
                 case R.id.myselfOptionsMenuItem:
-
-                    break;
+                    getFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.f_container, MyselfFragment.newInstance())
+                            .commit();
+                    return true;
             }
-
         }
+        return false;
     }
 }
